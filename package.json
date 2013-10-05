@@ -1,0 +1,20 @@
+{
+    "name": "mocha-casperjs",
+    "description": "Write CasperJS tests using Mocha",
+    "keywords": ["mocha", "casperjs", "bdd", "phantomjs", "testing"],
+    "version": "0.1.0",
+    "author": "Nathan Black <nathan@nathanblack.org>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nathanboktae/mocha-casperjs"
+    },
+    "bugs": "http://github.com/nathanboktae/mocha-casperjs/issues",
+    "main": "mocha-casperjs.js",
+    "peerDependencies": {
+        "mocha": ">= 1.8.0 <2",
+        "casperjs": ">= 1.1.0"
+    },
+    "devDependencies": {
+    }
+}
