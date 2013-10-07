@@ -14,12 +14,18 @@
     "trailing": true,
     "undef": true,
     "unused": true,
-    "white": true,
     "asi": true,
     "expr": true,
 
     "globals": {
         "casper": false,
-        "Mocha": false
+        "Mocha": false,
+        "mocha": false,
+        "describe": false,
+        "it": false,
+        "before": false,
+        "after": false,
+        "beforeEach": false,
+        "afterEach": false
     }
 }
