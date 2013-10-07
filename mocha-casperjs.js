@@ -56,4 +56,51 @@ module.exports = function (mocha, casper) {
       }
     }
   })
+
+  // Mocha needs the formating feature of console.log so copy node's format function and
+  // monkey-patch it into place. This code is copied from node's, links copyright applies.
+  // https://github.com/joyent/node/blob/master/lib/util.js
+  console.format = function (f) {
+    var i;
+    if (typeof f !== 'string') {
+      var objects = [];
+      for (i = 0; i < arguments.length; i++) {
+        objects.push(JSON.stringify(arguments[i]));
+      }
+      return objects.join(' ');
+    }
+    i = 1;
+    var args = arguments;
+    var len = args.length;
+    var str = String(f).replace(/%[sdj%]/g, function(x) {
+      if (x === '%%') return '%';
+      if (i >= len) return x;
+      switch (x) {
+        case '%s': return String(args[i++]);
+        case '%d': return Number(args[i++]);
+        case '%j': return JSON.stringify(args[i++]);
+        default:
+          return x;
+      }
+    });
+    for (var x = args[i]; i < len; x = args[++i]) {
+      if (x === null || typeof x !== 'object') {
+        str += ' ' + x;
+      } else {
+        str += ' ' + JSON.stringify(x);
+      }
+    }
+    return str;
+  };
+
+  var origError = console.error;
+  console.error = function() { origError.call(console, console.format.apply(console, arguments)); };
+  var origLog = console.log;
+  console.log = function() { origLog.call(console, console.format.apply(console, arguments)); };
+
+  // Since we're using the precompiled version of mocha usually meant for the browser, 
+  // patch the expossed process object (thanks mocha-phantomjs users for ensuring it's exposed)
+  // https://github.com/visionmedia/mocha/issues/770
+  mocha.process = mocha.process || {}
+  mocha.process.stdout = require('system').stdout
 }
