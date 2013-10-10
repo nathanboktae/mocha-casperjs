@@ -18,7 +18,8 @@
         "casperjs": ">= 1.1.0"
     },
     "devDependencies": {
-        "chai": ">= 1.8.x"
+        "chai": ">= 1.8.x",
+        "coffee-script": ">= 1.6.3"
     },
     "scripts": {
         "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
