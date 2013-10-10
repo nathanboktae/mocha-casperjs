@@ -11,8 +11,10 @@
     },
     "bugs": "http://github.com/nathanboktae/mocha-casperjs/issues",
     "main": "mocha-casperjs.js",
+    "dependencies": {
+        "mocha": ">= 1.8.0 <2"
+    },
     "peerDependencies": {
-        "mocha": ">= 1.8.0 <2",
         "casperjs": ">= 1.1.0"
     },
     "devDependencies": {
