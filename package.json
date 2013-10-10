@@ -19,6 +19,6 @@
         "chai": ">= 1.8.x"
     },
     "scripts": {
-        "test": "mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
+        "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
     }
 }
