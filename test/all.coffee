@@ -33,6 +33,13 @@ thisShouldPass = (test, done) ->
       throw new Error 'expected the test to pass, but it did not. Output above'
     done()
 
+thisShouldFailWith = (test, failureText, done) ->
+  runMochaCasperJsTest test, (output, code) ->
+    if code is 0 or output.indexOf(failureText) < 0
+      console.log output
+      throw new Error 'expected the test to fail with "' + failureText + '" in the failures, but it passed'
+    done()
+
 describe 'Mocha Runnable shim', ->
   it 'should flush all the steps at the end of a test', (done) ->
     thisShouldPass
@@ -42,4 +49,37 @@ describe 'Mocha Runnable shim', ->
       after: ->
         mocha.stepsRan.should.be.true.mmmkay
     , done
+
+  it 'should work as normal when no steps were added', (done) ->
+    thisShouldPass
+      test: ->
+        1.should.be.ok
+    , done
+
+  it 'should fail when a step fails', (done) ->
+    thisShouldFailWith
+      test: ->
+        casper.then ->
+          throw new Error 'boom'
+    , 'boom', done
+
+  it 'should fail when a step fails in before', (done) ->
+    thisShouldFailWith
+      before: ->
+        casper.start ->
+          throw new Error 'boom'
+      test: ->
+        casper.then ->
+          1.should.be.ok
+    , 'boom', done
+
+  it 'should fail when a step fails in after', (done) ->
+    thisShouldFailWith
+      test: ->
+        casper.then ->
+          1.should.be.ok
+      after: ->
+        casper.then ->
+          throw new Error 'boom'
+    , 'boom', done
     

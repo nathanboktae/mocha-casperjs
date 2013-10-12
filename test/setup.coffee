@@ -6,7 +6,7 @@ module.exports = (casper) ->
   require('../mocha-casperjs')(Mocha, casperInstance)
 
   chai = require '../node_modules/chai/chai'
-  chai.use require '../../casper-chai/lib/casper-chai'
+  chai.use require 'casper-chai'
   chai.should()
 
   return casperInstance
