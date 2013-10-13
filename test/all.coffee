@@ -66,7 +66,7 @@ describe 'Mocha Runnable shim', ->
   it 'should fail when a step fails in before', (done) ->
     thisShouldFailWith
       before: ->
-        casper.start ->
+        casper.start 'sample.html', ->
           throw new Error 'boom'
       test: ->
         casper.then ->

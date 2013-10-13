@@ -1,10 +1,19 @@
-var duckPunchedAlready = false
-
 module.exports = function (mocha, casper) {
-  if (duckPunchedAlready) {
-    return;
-  }
-  duckPunchedAlready = true
+  var lastError;
+
+  // hookup to all the various casper error events and save that error to report to mocha later
+  [
+    'error',
+    'wait.error',
+    'waitFor.timeout.error',
+    'event.error',
+    'complete.error',
+    'step.error'
+  ].forEach(function(event) {
+    casper.on(event, function(error) {
+      lastError = lastError || error
+    })
+  })
 
   // Method for patching mocha to run casper steps is inspired by https://github.com/domenic/mocha-as-promised
   //
@@ -18,16 +27,17 @@ module.exports = function (mocha, casper) {
       set: function (fn) {
         Object.defineProperty(this, 'casperWraperFn', {
           value: function (done) {
+            lastError = undefined
             // Run the original `fn`, passing along `done` for the case in which it's callback-asynchronous.
             // Make sure to forward the `this` context, since you can set variables and stuff on it to share
             // within a suite.
-            fn.call(this, done);
+            fn.call(this, done)
 
             if (casper.steps.length) {
               // There are casper steps queued up for this test. Run them now.
               casper.run(function () {
-                // we're wrapping done here with a function as we do not want arguments passed to it.
-                done()
+                // pass any error caught by capser along to mocha
+                done(lastError)
               })
             } else if (fn.length === 0) {
               // If `fn` is synchronous (i.e. didn't have a `done` parameter and didn't return a promise),
@@ -93,10 +103,10 @@ module.exports = function (mocha, casper) {
     return str;
   };
 
-  var origError = console.error;
-  console.error = function() { origError.call(console, console.format.apply(console, arguments)); };
-  var origLog = console.log;
-  console.log = function() { origLog.call(console, console.format.apply(console, arguments)); };
+  var origError = console.error,
+      origLog = console.log
+  console.error = function() { origError.call(console, console.format.apply(console, arguments)) }
+  console.log = function() { origLog.call(console, console.format.apply(console, arguments)) }
 
   // Since we're using the precompiled version of mocha usually meant for the browser, 
   // patch the expossed process object (thanks mocha-phantomjs users for ensuring it's exposed)
