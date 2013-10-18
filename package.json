@@ -1,28 +1,39 @@
 {
-    "name": "mocha-casperjs",
-    "description": "Write CasperJS tests using Mocha",
-    "keywords": ["mocha", "casperjs", "bdd", "phantomjs", "testing"],
-    "version": "0.1.0",
-    "author": "Nathan Black <nathan@nathanblack.org>",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/nathanboktae/mocha-casperjs"
-    },
-    "bugs": "http://github.com/nathanboktae/mocha-casperjs/issues",
-    "main": "mocha-casperjs.js",
-    "dependencies": {
-        "mocha": ">= 1.8.0 <2"
-    },
-    "peerDependencies": {
-        "casperjs": ">= 1.1.0"
-    },
-    "devDependencies": {
-        "chai": ">= 1.8.x",
-        "coffee-script": ">= 1.6.3",
-        "casper-chai": ">= 0.1.6"
-    },
-    "scripts": {
-        "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
-    }
+  "name": "mocha-casperjs",
+  "description": "Write CasperJS tests using Mocha",
+  "keywords": [
+    "mocha",
+    "casperjs",
+    "bdd",
+    "phantomjs",
+    "testing"
+  ],
+  "version": "0.1.0",
+  "author": "Nathan Black <nathan@nathanblack.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanboktae/mocha-casperjs"
+  },
+  "bugs": {
+    "url": "http://github.com/nathanboktae/mocha-casperjs/issues"
+  },
+  "main": "mocha-casperjs.js",
+  "dependencies": {
+    "mocha": ">= 1.8.0 <2"
+  },
+  "peerDependencies": {
+    "casperjs": ">= 1.1.0"
+  },
+  "devDependencies": {
+    "chai": ">= 1.8.x",
+    "coffee-script": ">= 1.6.3",
+    "casper-chai": ">= 0.1.6"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
+  },
+  "directories": {
+    "test": "test"
+  }
 }

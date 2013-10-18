@@ -5,6 +5,7 @@ module.exports = function (mocha, casper) {
   [
     'error',
     'wait.error',
+    'waitFor.timeout',
     'waitFor.timeout.error',
     'event.error',
     'complete.error',
@@ -33,8 +34,8 @@ module.exports = function (mocha, casper) {
             // within a suite.
             fn.call(this, done)
 
-            if (casper.steps.length) {
-              // There are casper steps queued up for this test. Run them now.
+            // only flush the casper steps on test Runnables, and only if there are steps
+            if (this.test && this.test.type === 'test' && casper.steps.length) {
               casper.run(function () {
                 // pass any error caught by capser along to mocha
                 done(lastError)

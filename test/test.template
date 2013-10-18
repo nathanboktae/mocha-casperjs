@@ -2,7 +2,8 @@ this.casper = require('./setup')(require('casper'));
 
 mocha.setup({
   ui: 'bdd',
-  reporter: 'spec'
+  reporter: '%s',
+  timeout: 5000
 });
 
 describe('in casperjs', function() {
