@@ -1,6 +1,6 @@
 {
     "camelcase": true,
-    "curly": true,
+    "curly": false,
     "eqeqeq": true,
     "globalstrict": false,
     "immed": true,
@@ -19,6 +19,7 @@
 
     "globals": {
         "casper": false,
+        "phantom": false,
         "Mocha": false,
         "mocha": false,
         "describe": false,

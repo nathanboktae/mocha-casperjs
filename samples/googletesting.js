@@ -1,31 +1,3 @@
-var casper = require('casper').create({
-  exitOnError: false,
-  pageSettings: {
-    loadImages: false,
-    loadPlugins: false
-  },
-  onLoadError: function (_casper, url) {
-    console.log('[onLoadError]: ' + url);
-  },
-  onTimeout: function (err) {
-    console.log('[Timeout]: ' + err);
-  }
-});
-
-require('../node_modules/mocha/mocha')
-require('../mocha-casperjs')(Mocha, casper)
-
-var chai = require('../node_modules/chai/chai')
-var casperChai = require('../../casper-chai/lib/casper-chai')
-
-chai.use(casperChai)
-chai.should()
-
-mocha.setup({
-  ui: 'bdd',
-  reporter: 'spec'
-})
-
 describe('Google searching', function() {
   before(function() {
     casper.start('http://www.google.fr/')
@@ -45,8 +17,4 @@ describe('Google searching', function() {
       (/q=casperjs/).should.matchUrl
     })
   })
-})
-
-mocha.run(function() {
-  casper.exit()
 })
