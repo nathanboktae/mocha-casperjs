@@ -8,7 +8,7 @@
     "phantomjs",
     "testing"
   ],
-  "version": "0.1.0",
+  "version": "0.1.3",
   "author": "Nathan Black <nathan@nathanblack.org>",
   "license": "MIT",
   "repository": {
@@ -19,11 +19,8 @@
     "url": "http://github.com/nathanboktae/mocha-casperjs/issues"
   },
   "main": "mocha-casperjs.js",
-  "dependencies": {
-    "mocha": ">= 1.8.0 <2"
-  },
   "peerDependencies": {
-    "casperjs": ">= 1.1.0"
+    "mocha": ">= 1.8.0 <2"
   },
   "devDependencies": {
     "chai": "1.8.1",

@@ -3,7 +3,12 @@ var cli = require('cli').parse(phantom.args),
     fs = require('fs'),
     searchPaths = ['./node_modules', '../node_modules', '/usr/local/node_modules'],
 
-find = function(what, optional) {
+getPathForModule = function(what, optional) {
+  var pathParam = cli.options[what + '-path']
+  if (pathParam) {
+    return fs.absolute(pathParam)
+  }
+
   for (var i = 0; i < searchPaths.length; i++) {
     var pathItem = searchPaths[i] + fs.separator + what;
     if (fs.exists(pathItem)) {
@@ -12,7 +17,7 @@ find = function(what, optional) {
   }
 
   if (optional) return
-  console.log('Unable to find "' + what + '". Try specifying the path explicity via --' + what)
+  console.log('Unable to find "' + what + '". Try specifying the path explicity via --' + what + '-path')
   casper.exit(-3)
 }
 
@@ -22,27 +27,24 @@ this.casper = require('casper').create({
 })
 
 // find where Mocha lives, then load the precompiled mocha from the root of it's module directory
-require((cli.options['mocha-path'] || find('mocha')) + '/mocha')
+require(getPathForModule('mocha') + '/mocha')
 
-// find where Chai lives and load it's precompiled version at the root of it's module directory
-// this shouldn't be needed for chai or casper-chai once casperjs removes the patchedRequire
-var chaiPath = cli.options['chai-path'] || find('chai', true)
+// find where Chai lives and load it if found
+var chaiPath = getPathForModule('chai', true)
 if (chaiPath) {
   this.chai = require(chaiPath)
   this.chai.should()
 
   // optionally try to use casper-chai if available
-  try {
-    var casperChaiPath = find('casper-chai', true)
-    if (casperChaiPath) {
-      this.chai.use(require(casperChaiPath))
-      console.log('using casper-chai')
-    }
-  } catch(e) { }
+  var casperChaiPath = getPathForModule('casper-chai', true)
+  if (casperChaiPath) {
+    this.chai.use(require(casperChaiPath))
+    console.log('using casper-chai from ' + casperChaiPath)
+  }
 }
 
 // Initialize the core of mocha-casperjs given the loaded Mocha class and casper instance
-require(fs.absolute('../mocha-casperjs'))(Mocha, casper)
+require(fs.absolute((cli.options['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(Mocha, casper)
 
 mocha.setup({
   ui: 'bdd',

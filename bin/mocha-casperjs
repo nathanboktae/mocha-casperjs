@@ -1,3 +1,4 @@
 #!/bin/sh
 
-casperjs $(dirname $0)/cli.js $*
+currentDirectory=$(dirname $0)
+casperjs $currentDirectory/cli.js --mocha-casperjs-path=$currentDirectory/.. $*
