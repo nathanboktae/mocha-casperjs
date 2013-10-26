@@ -2,7 +2,6 @@ debugger;
 var cli = require('cli').parse(phantom.args),
     fs = require('fs'),
     searchPaths = ['./node_modules', '../node_modules', '/usr/local/node_modules'],
-    chai,
 
 find = function(what, optional) {
   for (var i = 0; i < searchPaths.length; i++) {
@@ -29,12 +28,12 @@ require((cli.options['mocha-path'] || find('mocha')) + '/mocha')
 // this shouldn't be needed for chai or casper-chai once casperjs removes the patchedRequire
 var chaiPath = cli.options['chai-path'] || find('chai', true)
 if (chaiPath) {
-  chai = require(chaiPath)
-  chai.should()
+  this.chai = require(chaiPath)
+  this.chai.should()
 
   // optionally try to use casper-chai if available
   try {
-    chai.use(require(find('casper-chai', true)))
+    this.chai.use(require(find('casper-chai', true)))
     console.log('using casper-chai')
   } catch(e) { }
 }
