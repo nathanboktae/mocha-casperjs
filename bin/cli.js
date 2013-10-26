@@ -33,8 +33,11 @@ if (chaiPath) {
 
   // optionally try to use casper-chai if available
   try {
-    this.chai.use(require(find('casper-chai', true)))
-    console.log('using casper-chai')
+    var casperChaiPath = find('casper-chai', true)
+    if (casperChaiPath) {
+      this.chai.use(require(casperChaiPath))
+      console.log('using casper-chai')
+    }
   } catch(e) { }
 }
 
