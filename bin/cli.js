@@ -34,7 +34,7 @@ if (chaiPath) {
 
   // optionally try to use casper-chai if available
   try {
-    chai.use(require('casper-chai'))
+    chai.use(require(find('casper-chai', true)))
     console.log('using casper-chai')
   } catch(e) { }
 }
@@ -44,8 +44,8 @@ require(fs.absolute('../mocha-casperjs'))(Mocha, casper)
 
 mocha.setup({
   ui: 'bdd',
-  reporter: 'spec',
-  timeout: 5000
+  reporter: cli.options.reporter || 'spec',
+  timeout: cli.options.timeout || 5000
 });
 
 // load the user's tests
@@ -72,11 +72,9 @@ if (cli.args.length > 1) {
   })
 }
 
-console.log(JSON.stringify(tests))
 tests.map(function(test) {
   return fs.absolute(test).replace('.coffee', '').replace('.js', '')
 }).forEach(function(test) {
-  console.log('loading test ' + test)
   require(test)
 })
 

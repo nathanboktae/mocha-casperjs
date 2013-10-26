@@ -6,15 +6,14 @@ describe('Google searching', function() {
   it('should retrieve 10 or more results', function() {
     casper.then(function() {
       'Google'.should.matchTitle
-      'form[action="/search"]'.should.be.inDOM
+      'form[action="/search"]'.should.be.inDOM.and.be.visible
       this.fill('form[action="/search"]', {
-          q: 'casperjs'
-        }, true)
+        q: 'casperjs'
+      }, true)
     })
 
-    casper.then(function() {
-      'casperjs - Recherche Google'.should.matchTitle;
-      (/q=casperjs/).should.matchUrl
+    casper.waitForUrl(/q=casperjs/, function() {
+      (/casperjs/).should.matchTitle
     })
   })
 })
