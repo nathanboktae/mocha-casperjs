@@ -35,6 +35,11 @@ if (chaiPath) {
   this.chai = require(chaiPath)
   this.chai.should()
 
+  // expose expect globally if requested
+  if (cli.options.expect) {
+    this.expect = this.chai.expect
+  }
+
   // optionally try to use casper-chai if available
   var casperChaiPath = getPathForModule('casper-chai', true)
   if (casperChaiPath) {
