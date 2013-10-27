@@ -10,14 +10,15 @@ runMochaCasperJsTest = (test, callback) ->
     testfile = test
   else if typeof test is 'object'
     testfile = __dirname + '/temptest.js'
-    fs.readFile __dirname + '/test.template',
-      encoding: 'utf8'
-    , (err, template) ->
-      throw err if err
-      testContents = util.format template, test.reporter or 'spec', test.before or (-> casper.start('http://localhost:10473/sample')), test.test, test.after or (->)
-      fs.writeFile testfile, testContents, (err) -> throw err if err
 
-  process = spawn('casperjs', [testfile])
+  fs.writeFile testfile, "
+    describe('in casperjs', function() {
+      before(#{ test.before or (-> casper.start('http://localhost:10473/sample')) });
+      it('the test', #{ test.test });
+      after(#{ test.after or (->) });
+    });", (err) -> throw err if err
+
+  process = spawn('./bin/mocha-casperjs', [testfile, '--casper-timeout=2000', '--reporter=' + (test.reporter or 'spec')])
   output = ''
 
   process.stdout.on 'data', (data) ->
@@ -51,7 +52,8 @@ sampleHtml = '<!doctype html>
   </body>
   </html>'
 
-describe 'Mocha Runnable shim', ->
+
+describe 'mocha-casperjs', ->
   server = null
   before ->
     server = require('http').createServer (req, res) ->
@@ -65,103 +67,107 @@ describe 'Mocha Runnable shim', ->
         res.end sampleHtml
     server.listen 10473
   
-  it 'should flush all the steps at the end of a test', (done) ->
-    thisShouldPass
-      test: ->
-        casper.then ->  
-          mocha.stepsRan = true
-      after: ->
-        mocha.stepsRan.should.be.true.mmmkay
-    , done
 
-  it 'should not flush steps at other hooks', (done) ->
-    thisShouldPass
-      test: ->
-        casper.steps.length.should.be.above 0
-    , done
+  describe 'Mocha Runnable shim', ->
+    it 'should flush all the steps at the end of a test', (done) ->
+      thisShouldPass
+        test: ->
+          casper.then ->  
+            mocha.stepsRan = true
+        after: ->
+          mocha.stepsRan.should.be.true.mmmkay
+      , done
 
-  it 'should work as normal when no steps were added', (done) ->
-    thisShouldPass
-      test: ->
-        1.should.be.ok
-    , done
+    it 'should not flush steps at other hooks', (done) ->
+      thisShouldPass
+        test: ->
+          casper.steps.length.should.be.above 0
+      , done
 
-  it 'should fail when a step fails', (done) ->
-    thisShouldFailWith
-      test: ->
-        casper.then ->
-          1.should.not.be.ok
-    , 'AssertionError', done
-
-  it 'should fail when a step fails in before', (done) ->
-    thisShouldFailWith
-      before: ->
-        casper.start 'sample.html', ->
-          throw new Error 'boom'
-      test: ->
-        casper.then ->
+    it 'should work as normal when no steps were added', (done) ->
+      thisShouldPass
+        test: ->
           1.should.be.ok
-    , 'boom', done
+      , done
 
-  it 'should fail when waitFor times out', (done) ->
-    thisShouldFailWith
-      test: ->
-        casper.waitForSelector 'h1.nonexistant', ->
-          throw new Error 'we found it?!?'
-        casper.then -> throw new Error 'this shouldnt get here'
-    , 'timeout', done
+    it 'should have a simple test pass', (done) ->
+      thisShouldPass
+        test: ->
+          casper.waitForSelector 'h1', ->
+            /mocha-casperjs/.should.matchTitle
+          casper.then ->
+            'h1'.should.have.textMatch 'Hello World!'
+      , done
 
-  it 'should fail when the page times out', (done) ->
-    thisShouldFailWith
-      before: ->
-        casper.start 'http://localhost:10473/'
-      test: ->
-        casper.then ->
-          /mocha-casperjs/.should.matchTitle
-    , 'timeout', done
 
-  xit 'should fail when the page doesnt exist', (done) ->
-    # this should probably be configurable.
-    thisShouldFailWith
-      before: ->
-        casper.start 'http://localhost:10473/echo/404'
-      test: ->
-        casper.then ->
-          /mocha-casperjs/.should.matchTitle
-    , 'timeout', done
+  describe 'CasperJS error handling', ->   
+    it 'should fail when a step fails', (done) ->
+      thisShouldFailWith
+        test: ->
+          casper.then ->
+            1.should.not.be.ok
+      , 'AssertionError', done
 
-  xit 'should fail when the page has an error', (done) ->
-    thisShouldFailWith
-      before: ->
-        casper.start 'http://localhost:10473/echo/500'
-      test: ->
-        casper.then ->
-          /mocha-casperjs/.should.matchTitle
-    , '500', done
+    it 'should fail when a step fails in before', (done) ->
+      thisShouldFailWith
+        before: ->
+          casper.start 'sample.html', ->
+            throw new Error 'boom'
+        test: ->
+          casper.then ->
+            1.should.be.ok
+      , 'boom', done
 
-  it 'should have a simple test pass', (done) ->
-    thisShouldPass
-      test: ->
-        casper.waitForSelector 'h1', ->
-          /mocha-casperjs/.should.matchTitle
-        casper.then ->
-          'h1'.should.have.textMatch 'Hello World!'
-    , done
+    it 'should fail when waitFor times out', (done) ->
+      thisShouldFailWith
+        test: ->
+          casper.waitForSelector 'h1.nonexistant', ->
+            throw new Error 'we found it?!?'
+          casper.then -> throw new Error 'this shouldnt get here'
+      , 'timeout', done
+
+    it 'should fail when the page times out', (done) ->
+      thisShouldFailWith
+        before: ->
+          casper.start 'http://localhost:10473/'
+        test: ->
+          casper.then ->
+            /mocha-casperjs/.should.matchTitle
+      , 'Script timeout', done
+
+    xit 'should fail when the page doesnt exist', (done) ->
+      # this should probably be configurable.
+      thisShouldFailWith
+        before: ->
+          casper.start 'http://localhost:10473/echo/404'
+        test: ->
+          casper.then ->
+            /mocha-casperjs/.should.matchTitle
+      , 'timeout', done
+
+    xit 'should fail when the page has an error', (done) ->
+      thisShouldFailWith
+        before: ->
+          casper.start 'http://localhost:10473/echo/500'
+        test: ->
+          casper.then ->
+            /mocha-casperjs/.should.matchTitle
+      , '500', done
+
+
+  describe 'Mocha process.stdout redirection', ->
+    it 'should output results to the console', (done) ->
+      runMochaCasperJsTest
+        reporter: 'json',
+        test: ->
+          casper.then ->  
+            1.should.be.ok
+      , (output, code) ->
+        results = JSON.parse output
+        results.stats.passes.should.equal 1
+        results.stats.failures.should.equal 0
+        results.failures.should.be.empty
+        done()
 
   after -> server.close()
-
-describe 'Mocha process.stdout redirection', ->
-  it 'should output results to the console', (done) ->
-    runMochaCasperJsTest
-      reporter: 'json',
-      test: ->
-        casper.then ->  
-          1.should.be.ok
-    , (output, code) ->
-      results = JSON.parse output
-      results.stats.passes.should.equal 1
-      results.stats.failures.should.equal 0
-      results.failures.should.be.empty
-      done()
-
     
