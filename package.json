@@ -19,6 +19,9 @@
     "url": "http://github.com/nathanboktae/mocha-casperjs/issues"
   },
   "main": "mocha-casperjs.js",
+  "bin": {
+    "mocha": "./bin/mocha-casperjs"
+  },
   "peerDependencies": {
     "mocha": ">= 1.8.0 <2"
   },
