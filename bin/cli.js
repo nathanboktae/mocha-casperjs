@@ -54,7 +54,11 @@ mocha.setup({
   ui: 'bdd',
   reporter: cli.options.reporter || 'spec',
   timeout: cli.options.timeout || 10000
-});
+})
+
+if (cli.options.grep) {
+  mocha.grep(cli.options.grep)
+}
 
 // load the user's tests
 var tests = []
