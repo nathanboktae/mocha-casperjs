@@ -23,12 +23,13 @@
     "mocha": "./bin/mocha-casperjs"
   },
   "peerDependencies": {
-    "mocha": ">= 1.8.0 <2"
+    "mocha": ">= 1.13.0 <2"
   },
   "devDependencies": {
     "chai": "1.8.1",
     "coffee-script": ">= 1.6.3",
-    "casper-chai": ">= 0.1.6"
+    "casper-chai": ">= 0.1.6",
+    "mocha": "1.13.x"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
