@@ -1,4 +1,3 @@
-debugger;
 var cli = require('cli').parse(phantom.args),
     fs = require('fs'),
     searchPaths = ['./node_modules', '../node_modules', '/usr/local/node_modules'],
@@ -23,7 +22,8 @@ getPathForModule = function(what, optional) {
 
 // Load casper
 this.casper = require('casper').create({
-  exitOnError: false
+  exitOnError: true,
+  timeout: cli.options['casper-timeout'] || 5000
 })
 
 // find where Mocha lives, then load the precompiled mocha from the root of it's module directory
@@ -44,7 +44,6 @@ if (chaiPath) {
   var casperChaiPath = getPathForModule('casper-chai', true)
   if (casperChaiPath) {
     this.chai.use(require(casperChaiPath))
-    console.log('using casper-chai from ' + casperChaiPath)
   }
 }
 
@@ -54,7 +53,7 @@ require(fs.absolute((cli.options['mocha-casperjs-path'] || '..') + '/mocha-caspe
 mocha.setup({
   ui: 'bdd',
   reporter: cli.options.reporter || 'spec',
-  timeout: cli.options.timeout || 5000
+  timeout: cli.options.timeout || 10000
 });
 
 // load the user's tests

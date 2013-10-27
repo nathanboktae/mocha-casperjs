@@ -45,7 +45,11 @@ Like Mocha, if you place your tests in the `test` or `tests` directory, it will 
 `--reporter`
 `--timeout`
 
-These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 5 seconds, not two, as writing end to end tests takes more time.
+These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 10 seconds, not two, as writing end to end tests takes more time.
+
+`--casper-timeout`
+
+Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha's.
 
 `--expect`
 

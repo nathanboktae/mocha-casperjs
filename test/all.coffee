@@ -86,7 +86,7 @@ describe 'Mocha Runnable shim', ->
         1.should.be.ok
     , done
 
-  it 'should fail when a step failz', (done) ->
+  it 'should fail when a step fails', (done) ->
     thisShouldFailWith
       test: ->
         casper.then ->
