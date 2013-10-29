@@ -90,6 +90,9 @@ tests.map(function(test) {
   require(test)
 })
 
+// You can now set breakpoints in your scripts since they are loaded now
+debugger;
+
 // for convience, expose the current runner on the mocha global
 mocha.runner = mocha.run(function() {
   casper.exit(typeof (mocha.runner && mocha.runner.stats && mocha.runner.stats.failures) === 'number' ? mocha.runner.stats.failures : -1);

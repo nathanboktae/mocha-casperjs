@@ -18,7 +18,7 @@ runMochaCasperJsTest = (test, callback) ->
       after(#{ test.after or (->) });
     });", (err) -> throw err if err
 
-  process = spawn('./bin/mocha-casperjs', [testfile, '--casper-timeout=2000', '--reporter=' + (test.reporter or 'spec')])
+  process = spawn './bin/mocha-casperjs', [testfile, '--casper-timeout=2000', '--reporter=' + (test.reporter or 'spec')].concat(test.params or [])
   output = ''
 
   process.stdout.on 'data', (data) ->
@@ -167,6 +167,45 @@ describe 'mocha-casperjs', ->
         results.stats.passes.should.equal 1
         results.stats.failures.should.equal 0
         results.failures.should.be.empty
+        done()
+
+  describe 'Command line options', ->
+    it '--expect should expose chai.expect globally', (done) ->
+      thisShouldPass
+        params: ['--expect']
+        test: ->
+          expect('hi').to.be.a 'string'
+      , done
+
+    it '--casper-timeout should set Casper\'s timeout value', (done) ->
+      thisShouldFailWith
+        params: ['--casper-timeout=1234']
+        before: ->
+          casper.start 'http://localhost:10473/timeout'
+        test: ->
+          casper.then ->
+            throw new Error 'we should have timed out'
+      , 'Script timeout of 1234', done
+
+    it '--timeout should set Mocha\'s timeout value', (done) ->
+      thisShouldFailWith
+        params: ['--timeout=789']
+        before: ->
+          casper.start 'http://localhost:10473/timeout'
+        test: ->
+          casper.then ->
+            throw new Error 'we should have timed out'
+      , 'timeout of 789ms exceeded', done
+
+    it '--grep should filter tests', (done) ->
+      runMochaCasperJsTest
+        params: ['--grep=nonexistanttest']
+        test: ->
+          throw new Error 'test ran'
+      , (output, code) ->
+        output.should.not.contain 'failing'
+        output.should.not.contain 'test ran'
+        output.should.contain '0 passing'
         done()
 
   after -> server.close()
