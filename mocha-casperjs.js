@@ -1,11 +1,11 @@
-module.exports = function (mocha, casper) {
-  var lastError;
+module.exports = function (mocha, casper, utils) {
+  var lastError,
+      f = utils.format;
 
   // hookup to all the various casper error events and save that error to report to mocha later
   [
     'error',
     'wait.error',
-    'waitFor.timeout',
     'waitFor.timeout.error',
     'event.error',
     'complete.error',
@@ -15,6 +15,44 @@ module.exports = function (mocha, casper) {
       lastError = lastError || error
     })
   })
+
+  casper.on('waitFor.timeout', function(timeout, details) {
+    if (!lastError) {
+      var message = f('waitFor timeout of $dms occured', timeout)
+      details = details || {}
+
+      if (details.selector) {
+        message = f(details.waitWhile ? '"%s" never went away in %dms' : '"%s" still did not exist %dms', details.selector, timeout)
+      }
+      else if (details.visible) {
+        message = f(details.waitWhile ? '"%s" never disappeared in %dms' : '"%s" never appeared in %dms', details.visible, timeout)
+      }
+      else if (details.url) {
+        message = f('%s did not load in %dms', details.url, timeout)
+      }
+      else if (details.popup) {
+        message = f('%s did not pop up in %dms', details.popup, timeout)
+      }
+      else if (details.text) {
+        message = f('"%s" did not appear in the page in %dms', details.text, timeout)
+      }
+      else if (details.selectorTextChange) {
+        message = f('"%s" did not have a text change in %dms', details.selectorTextChange, timeout)
+      }
+      else if (typeof details.testFx === 'Function') {
+        message = f('"%s" did not appear in the page in %dms', details.testFx.toString(), timeout)
+      }
+
+      lastError = new Error(message)
+    }
+  })
+
+  casper.on('step.timeout', function(step, timeout) {
+    lastError = lastError || new Error(f('step %d timed out (%dms)', step, timeout))
+  })
+
+  // clear Casper's default handlers for these because handle everything through events
+  casper.options.onTimeout = casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
 
   // Method for patching mocha to run casper steps is inspired by https://github.com/domenic/mocha-as-promised
   //
