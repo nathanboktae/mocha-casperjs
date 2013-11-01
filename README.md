@@ -48,7 +48,7 @@ Like Mocha, if you place your tests in the `test` or `tests` directory, it will 
 --grep
 ````
 
-These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 10 seconds, not two, as writing end to end tests takes more time.
+These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.
 
 Note the CasperJS cli parser does not support shorthands or spaces between parameters. So rather than `-g foo` and `--grep foo`, use `--grep=foo`
 

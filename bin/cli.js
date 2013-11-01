@@ -23,7 +23,9 @@ getPathForModule = function(what, optional) {
 // Load casper
 this.casper = require('casper').create({
   exitOnError: true,
-  timeout: cli.options['casper-timeout'] || 5000
+  timeout: cli.options['casper-timeout'] || 10000,
+  verbose: !!cli.options.verbose || cli.options['log-level'] === 'debug',
+  logLevel: cli.options['log-level'] ||'warning'
 })
 
 // find where Mocha lives, then load the precompiled mocha from the root of it's module directory
@@ -48,12 +50,12 @@ if (chaiPath) {
 }
 
 // Initialize the core of mocha-casperjs given the loaded Mocha class and casper instance
-require(fs.absolute((cli.options['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(Mocha, casper)
+require(fs.absolute((cli.options['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(Mocha, casper, require('utils'))
 
 mocha.setup({
   ui: 'bdd',
   reporter: cli.options.reporter || 'spec',
-  timeout: cli.options.timeout || 10000
+  timeout: cli.options.timeout || 30000
 })
 
 if (cli.options.grep) {
