@@ -1,6 +1,11 @@
 module.exports = function (mocha, casper, utils) {
-  var lastError,
-      f = utils.format;
+  var currentDone,
+      f = utils.format,
+
+  failTest = function(error) {
+    casper.unwait()
+    currentDone(error)
+  };
 
   // hookup to all the various casper error events and save that error to report to mocha later
   [
@@ -12,47 +17,48 @@ module.exports = function (mocha, casper, utils) {
     'step.error'
   ].forEach(function(event) {
     casper.on(event, function(error) {
-      lastError = lastError || error
+      failTest(error)
     })
   })
 
   casper.on('waitFor.timeout', function(timeout, details) {
-    if (!lastError) {
-      var message = f('waitFor timeout of $dms occured', timeout)
-      details = details || {}
+    var message = f('waitFor timeout of $dms occured', timeout)
+    details = details || {}
 
-      if (details.selector) {
-        message = f(details.waitWhile ? '"%s" never went away in %dms' : '"%s" still did not exist %dms', details.selector, timeout)
-      }
-      else if (details.visible) {
-        message = f(details.waitWhile ? '"%s" never disappeared in %dms' : '"%s" never appeared in %dms', details.visible, timeout)
-      }
-      else if (details.url) {
-        message = f('%s did not load in %dms', details.url, timeout)
-      }
-      else if (details.popup) {
-        message = f('%s did not pop up in %dms', details.popup, timeout)
-      }
-      else if (details.text) {
-        message = f('"%s" did not appear in the page in %dms', details.text, timeout)
-      }
-      else if (details.selectorTextChange) {
-        message = f('"%s" did not have a text change in %dms', details.selectorTextChange, timeout)
-      }
-      else if (typeof details.testFx === 'Function') {
-        message = f('"%s" did not appear in the page in %dms', details.testFx.toString(), timeout)
-      }
-
-      lastError = new Error(message)
+    if (details.selector) {
+      message = f(details.waitWhile ? '"%s" never went away in %dms' : '"%s" still did not exist %dms', details.selector, timeout)
     }
+    else if (details.visible) {
+      message = f(details.waitWhile ? '"%s" never disappeared in %dms' : '"%s" never appeared in %dms', details.visible, timeout)
+    }
+    else if (details.url) {
+      message = f('%s did not load in %dms', details.url, timeout)
+    }
+    else if (details.popup) {
+      message = f('%s did not pop up in %dms', details.popup, timeout)
+    }
+    else if (details.text) {
+      message = f('"%s" did not appear in the page in %dms', details.text, timeout)
+    }
+    else if (details.selectorTextChange) {
+      message = f('"%s" did not have a text change in %dms', details.selectorTextChange, timeout)
+    }
+    else if (typeof details.testFx === 'Function') {
+      message = f('"%s" did not appear in the page in %dms', details.testFx.toString(), timeout)
+    }
+
+    failTest(new Error(message))
   })
 
   casper.on('step.timeout', function(step, timeout) {
-    lastError = lastError || new Error(f('step %d timed out (%dms)', step, timeout))
+    failTest(new Error(f('step %d timed out (%dms)', step, timeout)))
   })
 
   // clear Casper's default handlers for these because handle everything through events
-  casper.options.onTimeout = casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
+  casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
+  casper.options.onTimeout = function(timeout) {
+    failTest(new Error(f('load timeout of (%dms)', timeout)))
+  }
 
   // Method for patching mocha to run casper steps is inspired by https://github.com/domenic/mocha-as-promised
   //
@@ -66,7 +72,7 @@ module.exports = function (mocha, casper, utils) {
       set: function (fn) {
         Object.defineProperty(this, 'casperWraperFn', {
           value: function (done) {
-            lastError = undefined
+            currentDone = done
             // Run the original `fn`, passing along `done` for the case in which it's callback-asynchronous.
             // Make sure to forward the `this` context, since you can set variables and stuff on it to share
             // within a suite.
@@ -75,8 +81,9 @@ module.exports = function (mocha, casper, utils) {
             // only flush the casper steps on test Runnables, and only if there are steps
             if (this.test && this.test.type === 'test' && casper.steps.length) {
               casper.run(function () {
-                // pass any error caught by capser along to mocha
-                done(lastError)
+                // don't call done if we already failed the test
+                debugger;
+                done()
               })
             } else if (fn.length === 0) {
               // If `fn` is synchronous (i.e. didn't have a `done` parameter and didn't return a promise),

@@ -18,7 +18,7 @@ runMochaCasperJsTest = (test, callback) ->
       after(#{ test.after or (->) });
     });", (err) -> throw err if err
 
-  process = spawn './bin/mocha-casperjs', [testfile, '--casper-timeout=2000', '--reporter=' + (test.reporter or 'spec')].concat(test.params or [])
+  process = spawn './bin/mocha-casperjs', [testfile, '--reporter=' + (test.reporter or 'spec')].concat(test.params or [])
   output = ''
 
   process.stdout.on 'data', (data) ->
@@ -61,10 +61,18 @@ describe 'mocha-casperjs', ->
       if echoStatus?[1]
         res.statusCode = echoStatus[1]
         res.end()
-      if req.url is '/sample'
+      else if req.url is '/sample'
         res.writeHead '200', 
           'Content-Type': 'text/html'
         res.end sampleHtml
+      else if req.url is '/timeout'
+        res.writeHead '200'
+        setTimeout ->
+          res.end()
+        , 100000
+      else
+        res.write '404'
+        res.end()
     server.listen 10473
   
 
@@ -124,16 +132,17 @@ describe 'mocha-casperjs', ->
           casper.waitForSelector 'h1.nonexistant', ->
             throw new Error 'we found it?!?'
           casper.then -> throw new Error 'this shouldnt get here'
-      , 'timeout', done
+      , '5000ms', done
 
     it 'should fail when the page times out', (done) ->
       thisShouldFailWith
+        params: ['--casper-timeout=3000']
         before: ->
-          casper.start 'http://localhost:10473/'
+          casper.start 'http://localhost:10473/timeout'
         test: ->
           casper.then ->
             /mocha-casperjs/.should.matchTitle
-      , 'Script timeout', done
+      , 'timeout', done
 
     xit 'should fail when the page doesnt exist', (done) ->
       # this should probably be configurable.
@@ -185,7 +194,7 @@ describe 'mocha-casperjs', ->
         test: ->
           casper.then ->
             throw new Error 'we should have timed out'
-      , 'Script timeout of 1234', done
+      , '1234', done
 
     it '--timeout should set Mocha\'s timeout value', (done) ->
       thisShouldFailWith

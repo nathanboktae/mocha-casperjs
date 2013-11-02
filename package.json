@@ -15,6 +15,7 @@
     "type": "git",
     "url": "https://github.com/nathanboktae/mocha-casperjs"
   },
+  "readmeFilename": "Readme.md",
   "bugs": {
     "url": "http://github.com/nathanboktae/mocha-casperjs/issues"
   },
@@ -32,7 +33,7 @@
     "mocha": "1.13.x"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 10000 -R spec test/all.coffee"
+    "test": "./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -t 15000 -R spec test/all.coffee"
   },
   "directories": {
     "test": "test"
