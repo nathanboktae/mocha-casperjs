@@ -22,7 +22,7 @@ module.exports = function (mocha, casper, utils) {
   })
 
   casper.on('waitFor.timeout', function(timeout, details) {
-    var message = f('waitFor timeout of $dms occured', timeout)
+    var message = f('waitFor timeout of %dms occured', timeout)
     details = details || {}
 
     if (details.selector) {
