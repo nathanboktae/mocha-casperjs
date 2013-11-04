@@ -53,12 +53,12 @@ module.exports = function (mocha, casper, utils) {
   casper.on('step.timeout', function(step, timeout) {
     failTest(new Error(f('step %d timed out (%dms)', step, timeout)))
   })
+  casper.on('timeout', function(timeout) {
+    failTest(new Error(f('load timeout of (%dms)', timeout)))
+  })
 
   // clear Casper's default handlers for these because handle everything through events
-  casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
-  casper.options.onTimeout = function(timeout) {
-    failTest(new Error(f('load timeout of (%dms)', timeout)))
-  }
+  casper.options.onTimeout = casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
 
   // Method for patching mocha to run casper steps is inspired by https://github.com/domenic/mocha-as-promised
   //
@@ -81,8 +81,6 @@ module.exports = function (mocha, casper, utils) {
             // only flush the casper steps on test Runnables, and only if there are steps
             if (this.test && this.test.type === 'test' && casper.steps.length) {
               casper.run(function () {
-                // don't call done if we already failed the test
-                debugger;
                 done()
               })
             } else if (fn.length === 0) {
