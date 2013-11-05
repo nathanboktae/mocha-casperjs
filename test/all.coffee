@@ -217,5 +217,19 @@ describe 'mocha-casperjs', ->
         output.should.contain '0 passing'
         done()
 
+    it '--file should pipe reporter output to a file', (done) ->
+      runMochaCasperJsTest
+        params: ['--file=filepipe.json', '--reporter=json', '--log-level=info']
+        test: ->
+          casper.log 'bla blah that is not valid json', 'info'
+          1.should.be.ok
+      , (output, code) ->
+        results = JSON.parse fs.readFileSync 'filepipe.json'
+        fs.unlink 'filepipe.json', (->)
+        results.stats.passes.should.equal 1
+        results.stats.failures.should.equal 0
+        results.failures.should.be.empty
+        done()
+
   after -> server.close()
     

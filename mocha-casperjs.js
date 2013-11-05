@@ -1,4 +1,4 @@
-module.exports = function (mocha, casper, utils) {
+module.exports = function (Mocha, casper, utils) {
   var currentDone,
       f = utils.format,
 
@@ -53,8 +53,8 @@ module.exports = function (mocha, casper, utils) {
   casper.on('step.timeout', function(step, timeout) {
     failTest(new Error(f('step %d timed out (%dms)', step, timeout)))
   })
-  casper.on('timeout', function(timeout) {
-    failTest(new Error(f('load timeout of (%dms)', timeout)))
+  casper.on('timeout', function() {
+    failTest(new Error(f('Load timeout of (%dms)', casper.options.timeout)))
   })
 
   // clear Casper's default handlers for these because handle everything through events
@@ -62,7 +62,7 @@ module.exports = function (mocha, casper, utils) {
 
   // Method for patching mocha to run casper steps is inspired by https://github.com/domenic/mocha-as-promised
   //
-  Object.defineProperties(mocha.Runnable.prototype, {
+  Object.defineProperties(Mocha.Runnable.prototype, {
     fn: {
       configurable: true,
       enumerable: true,
@@ -155,6 +155,6 @@ module.exports = function (mocha, casper, utils) {
   // Since we're using the precompiled version of mocha usually meant for the browser, 
   // patch the expossed process object (thanks mocha-phantomjs users for ensuring it's exposed)
   // https://github.com/visionmedia/mocha/issues/770
-  mocha.process = mocha.process || {}
-  mocha.process.stdout = require('system').stdout
+  Mocha.process = Mocha.process || {}
+  Mocha.process.stdout = require('system').stdout
 }

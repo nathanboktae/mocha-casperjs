@@ -52,7 +52,7 @@ These are all [Mocha command line options](http://visionmedia.github.io/mocha/#u
 
 Note the CasperJS cli parser does not support shorthands or spaces between parameters. So rather than `-g foo` and `--grep foo`, use `--grep=foo`
 
-`--casper-timeout`
+`--casper-timeout=<timeout in ms>`
 
 Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha's.
 
@@ -60,15 +60,20 @@ Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha'
 
 Expose `chai.expect` as global `expect`
 
-`--mocha-path`
+`--file=<file>`
+
+Pipe reporter output to the specified file instead of standard out. Use this if you have to filter out console messages from reporter output, like for `json`, `xunit`, etc. type of reporters
+
+
+`--mocha-path=<path>`
 
 Load [Mocha][] from the specified path
 
-`--chai-path`
+`--chai-path=<path>`
 
 Load [Chai][] from the specified path
 
-`--casper-chai-path`
+`--casper-chai-path=<path>`
 
 Load [casper-chai][] from the specified path
 

@@ -62,6 +62,10 @@ if (cli.options.grep) {
   mocha.grep(cli.options.grep)
 }
 
+if (cli.options.file) {
+  Mocha.process.stdout = fs.open(cli.options.file, 'w')
+}
+
 // load the user's tests
 var tests = []
 if (cli.args.length > 1) {
@@ -97,5 +101,8 @@ debugger;
 
 // for convience, expose the current runner on the mocha global
 mocha.runner = mocha.run(function() {
+  if (cli.options.file) {
+    Mocha.process.stdout.close()
+  }
   casper.exit(typeof (mocha.runner && mocha.runner.stats && mocha.runner.stats.failures) === 'number' ? mocha.runner.stats.failures : -1);
 });
