@@ -46,6 +46,9 @@ Like Mocha, if you place your tests in the `test` or `tests` directory, it will 
 --reporter
 --timeout
 --grep
+--invert
+--no-color
+--slow
 ````
 
 These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.

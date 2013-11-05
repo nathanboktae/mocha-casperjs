@@ -217,6 +217,37 @@ describe 'mocha-casperjs', ->
         output.should.contain '0 passing'
         done()
 
+    it '--grep with --invert should filter out tests', (done) ->
+      runMochaCasperJsTest
+        params: ['--grep=casperjs', '--invert']
+        test: ->
+          throw new Error 'test ran'
+      , (output, code) ->
+        output.should.not.contain 'failing'
+        output.should.not.contain 'test ran'
+        output.should.contain '0 passing'
+        done()
+
+    it '--no-color should turn off color codes', (done) ->
+      runMochaCasperJsTest
+        params: ['--no-color']
+        test: ->
+          1.should.be.ok
+      , (output, code) ->
+        output.should.contain '1 passing'
+        output.should.not.contain '[0m'
+        done()
+
+    it '--slow should set the slow threshold', (done) ->
+      runMochaCasperJsTest
+        params: ['--slow=30000', '--no-color']
+        test: ->
+          casper.wait 1000, ->
+            console.log 'slow but not that slow'
+      , (output, code) ->
+        output.should.not.match /\d+ms/
+        done()
+
     it '--file should pipe reporter output to a file', (done) ->
       runMochaCasperJsTest
         params: ['--file=filepipe.json', '--reporter=json', '--log-level=info']

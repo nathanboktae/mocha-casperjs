@@ -60,10 +60,21 @@ mocha.setup({
 
 if (cli.options.grep) {
   mocha.grep(cli.options.grep)
+  if (cli.options.invert) {
+    mocha.invert()
+  }
 }
 
 if (cli.options.file) {
   Mocha.process.stdout = fs.open(cli.options.file, 'w')
+}
+
+if (cli.options['no-color']) {
+  Mocha.reporters.Base.useColors = false;
+}
+
+if (cli.options.slow) {
+  mocha.slow(cli.options.slow)
 }
 
 // load the user's tests
