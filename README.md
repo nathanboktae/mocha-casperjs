@@ -42,6 +42,8 @@ Like Mocha, if you place your tests in the `test` or `tests` directory, it will 
 
 ## Command Line Options
 
+In addition to specifying options on the command line, you can add them to a `mocha-casperjs.opts` [like mocha.opts](http://visionmedia.github.io/mocha/#mocha.opts), except it looks for this file in the current directory.
+
 ````
 --reporter
 --timeout

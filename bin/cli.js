@@ -1,9 +1,11 @@
-var cli = require('cli').parse(phantom.args),
+var cli = require('cli'),
+    cliOptions = cli.parse(phantom.args),
+    opts = cliOptions.options,
     fs = require('fs'),
     searchPaths = ['./node_modules', '../node_modules', '/usr/local/node_modules'],
 
 getPathForModule = function(what, optional) {
-  var pathParam = cli.options[what + '-path']
+  var pathParam = opts[what + '-path']
   if (pathParam) {
     return fs.absolute(pathParam)
   }
@@ -20,12 +22,17 @@ getPathForModule = function(what, optional) {
   casper.exit(-3)
 }
 
+if (fs.exists('mocha-casperjs.opts')) {
+  var rawOpts = fs.read('mocha-casperjs.opts').split('\n')
+  opts = require('utils').mergeObjects(cli.parse(rawOpts).options, opts)
+}
+
 // Load casper
 this.casper = require('casper').create({
   exitOnError: true,
-  timeout: cli.options['casper-timeout'] || 10000,
-  verbose: !!cli.options.verbose || cli.options['log-level'] === 'debug',
-  logLevel: cli.options['log-level'] ||'warning'
+  timeout: opts['casper-timeout'] || 10000,
+  verbose: !!opts.verbose || opts['log-level'] === 'debug',
+  logLevel: opts['log-level'] ||'warning'
 })
 
 // find where Mocha lives, then load the precompiled mocha from the root of it's module directory
@@ -38,7 +45,7 @@ if (chaiPath) {
   this.chai.should()
 
   // expose expect globally if requested
-  if (cli.options.expect) {
+  if (opts.expect) {
     this.expect = this.chai.expect
   }
 
@@ -50,38 +57,38 @@ if (chaiPath) {
 }
 
 // Initialize the core of mocha-casperjs given the loaded Mocha class and casper instance
-require(fs.absolute((cli.options['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(Mocha, casper, require('utils'))
+require(fs.absolute((opts['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(Mocha, casper, require('utils'))
 
 mocha.setup({
   ui: 'bdd',
-  reporter: cli.options.reporter || 'spec',
-  timeout: cli.options.timeout || 30000
+  reporter: opts.reporter || 'spec',
+  timeout: opts.timeout || 30000
 })
 
-if (cli.options.grep) {
-  mocha.grep(cli.options.grep)
-  if (cli.options.invert) {
+if (opts.grep) {
+  mocha.grep(opts.grep)
+  if (opts.invert) {
     mocha.invert()
   }
 }
 
-if (cli.options.file) {
-  Mocha.process.stdout = fs.open(cli.options.file, 'w')
+if (opts.file) {
+  Mocha.process.stdout = fs.open(opts.file, 'w')
 }
 
-if (cli.options['no-color']) {
+if (opts['no-color']) {
   Mocha.reporters.Base.useColors = false;
 }
 
-if (cli.options.slow) {
-  mocha.slow(cli.options.slow)
+if (opts.slow) {
+  mocha.slow(opts.slow)
 }
 
 // load the user's tests
 var tests = []
-if (cli.args.length > 1) {
+if (cliOptions.args.length > 1) {
   // use tests if they specified them explicty
-  tests = cli.args.slice()
+  tests = cliOptions.args.slice()
   tests.shift()
 } else {
   // otherwise, load files from the test or tests directory like Mocha does
@@ -112,7 +119,7 @@ debugger;
 
 // for convience, expose the current runner on the mocha global
 mocha.runner = mocha.run(function() {
-  if (cli.options.file) {
+  if (opts.file) {
     Mocha.process.stdout.close()
   }
   casper.exit(typeof (mocha.runner && mocha.runner.stats && mocha.runner.stats.failures) === 'number' ? mocha.runner.stats.failures : -1);
