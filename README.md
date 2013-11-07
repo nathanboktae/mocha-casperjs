@@ -69,18 +69,13 @@ Expose `chai.expect` as global `expect`
 
 Pipe reporter output to the specified file instead of standard out. Use this if you have to filter out console messages from reporter output, like for `json`, `xunit`, etc. type of reporters
 
-
-`--mocha-path=<path>`
-
-Load [Mocha][] from the specified path
-
 `--chai-path=<path>`
 
-Load [Chai][] from the specified path
+Load [Chai][] from the specified path, otherwise look for it adjacent to mocha-casperjs
 
 `--casper-chai-path=<path>`
 
-Load [casper-chai][] from the specified path
+Load [casper-chai][] from the specified path, otherwise look for it adjacent to mocha-casperjs
 
 ## How it works
 

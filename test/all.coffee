@@ -18,7 +18,7 @@ runMochaCasperJsTest = (test, callback) ->
       after(#{ test.after or (->) });
     });", (err) -> throw err if err
 
-  process = spawn './bin/mocha-casperjs', [testfile, '--reporter=' + (test.reporter or 'spec')].concat(test.params or [])
+  process = spawn './bin/mocha-casperjs', ['--chai-path=node_modules/chai', testfile].concat(test.params or [])
   output = ''
 
   process.stdout.on 'data', (data) ->
@@ -100,6 +100,7 @@ describe 'mocha-casperjs', ->
 
     it 'should have a simple test pass', (done) ->
       thisShouldPass
+        params: ['--casper-chai-path=node_modules/casper-chai']
         test: ->
           casper.waitForSelector 'h1', ->
             /mocha-casperjs/.should.matchTitle
@@ -141,7 +142,7 @@ describe 'mocha-casperjs', ->
           casper.start 'http://localhost:10473/timeout'
         test: ->
           casper.then ->
-            /mocha-casperjs/.should.matchTitle
+            throw new Error 'we should have timed out'
       , 'timeout', done
 
     xit 'should fail when the page doesnt exist', (done) ->
@@ -151,7 +152,7 @@ describe 'mocha-casperjs', ->
           casper.start 'http://localhost:10473/echo/404'
         test: ->
           casper.then ->
-            /mocha-casperjs/.should.matchTitle
+            throw new Error 'we should have timed out'
       , 'timeout', done
 
     xit 'should fail when the page has an error', (done) ->
@@ -160,14 +161,14 @@ describe 'mocha-casperjs', ->
           casper.start 'http://localhost:10473/echo/500'
         test: ->
           casper.then ->
-            /mocha-casperjs/.should.matchTitle
+            throw new Error 'we should have timed out'
       , '500', done
 
 
   describe 'Mocha process.stdout redirection', ->
     it 'should output results to the console', (done) ->
       runMochaCasperJsTest
-        reporter: 'json',
+        params: ['--reporter=json'],
         test: ->
           casper.then ->  
             1.should.be.ok

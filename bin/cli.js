@@ -2,24 +2,9 @@ var cli = require('cli'),
     cliOptions = cli.parse(phantom.args),
     opts = cliOptions.options,
     fs = require('fs'),
-    searchPaths = ['./node_modules', '../node_modules', '/usr/local/node_modules'],
 
-getPathForModule = function(what, optional) {
-  var pathParam = opts[what + '-path']
-  if (pathParam) {
-    return fs.absolute(pathParam)
-  }
-
-  for (var i = 0; i < searchPaths.length; i++) {
-    var pathItem = searchPaths[i] + fs.separator + what;
-    if (fs.exists(pathItem)) {
-      return fs.absolute(pathItem)
-    }
-  }
-
-  if (optional) return
-  console.log('Unable to find "' + what + '". Try specifying the path explicity via --' + what + '-path')
-  casper.exit(-3)
+getPathForModule = function(what) {
+  return fs.absolute(opts[what + '-path'] || opts['mocha-casperjs-path'] + '/../../node_modules/' + what)
 }
 
 if (fs.exists('mocha-casperjs.opts')) {
@@ -35,13 +20,11 @@ this.casper = require('casper').create({
   logLevel: opts['log-level'] ||'warning'
 })
 
-// find where Mocha lives, then load the precompiled mocha from the root of it's module directory
-require(getPathForModule('mocha') + '/mocha')
+// Load the precompiled mocha from the root of it's module directory
+require('../node_modules/mocha/mocha')
 
-// find where Chai lives and load it if found
-var chaiPath = getPathForModule('chai', true)
-if (chaiPath) {
-  this.chai = require(chaiPath)
+try {
+  this.chai = require(getPathForModule('chai'))
   this.chai.should()
 
   // expose expect globally if requested
@@ -50,10 +33,15 @@ if (chaiPath) {
   }
 
   // optionally try to use casper-chai if available
-  var casperChaiPath = getPathForModule('casper-chai', true)
-  if (casperChaiPath) {
-    this.chai.use(require(casperChaiPath))
+  try {
+    this.chai.use(require(getPathForModule('casper-chai')))
+    casper.log('using casper-chai', 'debug')
   }
+  catch (e) {
+    casper.log('could not load casper-chai: ' + e, 'debug')
+  }
+} catch (e) {
+  casper.log('could not load chai ' + e, 'debug')
 }
 
 // Initialize the core of mocha-casperjs given the loaded Mocha class and casper instance
@@ -62,7 +50,8 @@ require(fs.absolute((opts['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(
 mocha.setup({
   ui: 'bdd',
   reporter: opts.reporter || 'spec',
-  timeout: opts.timeout || 30000
+  timeout: opts.timeout || 30000,
+  useColors: !opts['no-color']
 })
 
 if (opts.grep) {
@@ -74,10 +63,6 @@ if (opts.grep) {
 
 if (opts.file) {
   Mocha.process.stdout = fs.open(opts.file, 'w')
-}
-
-if (opts['no-color']) {
-  Mocha.reporters.Base.useColors = false;
 }
 
 if (opts.slow) {
