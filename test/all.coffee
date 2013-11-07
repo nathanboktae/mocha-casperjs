@@ -18,7 +18,7 @@ runMochaCasperJsTest = (test, callback) ->
       after(#{ test.after or (->) });
     });", (err) -> throw err if err
 
-  process = spawn './bin/mocha-casperjs', ['--chai-path=node_modules/chai', testfile].concat(test.params or [])
+  process = spawn './bin/mocha-casperjs', ['--mocha-path=node_modules/mocha', '--chai-path=node_modules/chai', testfile].concat(test.params or [])
   output = ''
 
   process.stdout.on 'data', (data) ->

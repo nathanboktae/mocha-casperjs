@@ -21,7 +21,7 @@ this.casper = require('casper').create({
 })
 
 // Load the precompiled mocha from the root of it's module directory
-require('../node_modules/mocha/mocha')
+require(getPathForModule('mocha') + '/mocha')
 
 try {
   this.chai = require(getPathForModule('chai'))

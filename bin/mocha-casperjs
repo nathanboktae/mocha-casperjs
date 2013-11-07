@@ -1,4 +1,9 @@
 #!/bin/sh
 
-currentDirectory=$(dirname $0)
-casperjs $currentDirectory/cli.js --mocha-casperjs-path=$currentDirectory/.. $*
+mcPath=$(dirname $0)
+symLink=$(readlink $0)
+if [[ ! -z "$symLink" ]]; then
+  mcPath=$(cd $mcPath;cd $(dirname $symLink); pwd)
+fi
+
+casperjs $mcPath/cli.js --mocha-casperjs-path=$mcPath/.. $*
