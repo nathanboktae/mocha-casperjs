@@ -5,7 +5,9 @@ module.exports = function (Mocha, casper, utils) {
   failTest = function(error) {
     casper.unwait()
     currentDone(error)
-  };
+  }
+
+  Mocha.prototype.failCurrentTest = failTest;
 
   // hookup to all the various casper error events and save that error to report to mocha later
   [

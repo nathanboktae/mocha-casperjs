@@ -145,25 +145,19 @@ describe 'mocha-casperjs', ->
             throw new Error 'we should have timed out'
       , 'timeout', done
 
-    xit 'should fail when the page doesnt exist', (done) ->
-      # this should probably be configurable.
-      thisShouldFailWith
-        before: ->
-          casper.start 'http://localhost:10473/echo/404'
+    it 'failCurrentTest should allow tests to be failed', (done) ->
+      runMochaCasperJsTest
         test: ->
-          casper.then ->
-            throw new Error 'we should have timed out'
-      , 'timeout', done
-
-    xit 'should fail when the page has an error', (done) ->
-      thisShouldFailWith
-        before: ->
-          casper.start 'http://localhost:10473/echo/500'
-        test: ->
-          casper.then ->
-            throw new Error 'we should have timed out'
-      , '500', done
-
+          casper.on 'page.error', (msg, trace) ->
+            mocha.failCurrentTest new Error('error from page: ' + msg)
+          casper.evaluate ->  
+            window.foobarkaboom.blahblah
+      , (output, code) ->
+        code.should.not.equal 0
+        output.should.contain('1 failing')
+              .and.contain('0 passing')
+              .and.contain('foobarkaboom')
+        done()
 
   describe 'Mocha process.stdout redirection', ->
     it 'should output results to the console', (done) ->
