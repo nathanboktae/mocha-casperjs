@@ -1,5 +1,5 @@
-if (typeof chai === 'undefined') {
-  console.log('This example requires chai to be installed adjacent to mocha-casperjs')
+if (typeof chai === 'undefined' || !('trueOnRemote' in chai.Assertion.prototype)) {
+  console.log('This example requires chai and casper-chai to be installed adjacent to mocha-casperjs')
   casper.exit(-1)
 }
 
@@ -10,15 +10,15 @@ describe('Google searching', function() {
 
   it('should retrieve 10 or more results', function() {
     casper.then(function() {
-      casper.getTitle().should.contain('Google')
-      casper.exists('form[action="/search"]').should.be.true
+      'Google'.should.matchTitle
+      'form[action="/search"]'.should.be.inDOM.and.be.visible
       this.fill('form[action="/search"]', {
         q: 'casperjs'
       }, true)
     })
 
     casper.waitForUrl(/q=casperjs/, function() {
-      casper.getTitle().should.match(/casperjs/)
+      (/casperjs/).should.matchTitle
     })
   })
 })
