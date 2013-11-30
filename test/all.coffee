@@ -105,7 +105,7 @@ describe 'mocha-casperjs', ->
           casper.waitForSelector 'h1', ->
             /mocha-casperjs/.should.matchTitle
           casper.then ->
-            'h1'.should.have.textMatch 'Hello World!'
+            'h1'.should.have.text 'Hello World!'
       , done
 
 
