@@ -4,7 +4,9 @@ module.exports = function (Mocha, casper, utils) {
 
   failTest = function(error) {
     casper.unwait()
-    currentDone(error)
+    if (currentDone) {
+      currentDone(error)
+    }
   }
 
   Mocha.prototype.failCurrentTest = failTest;
