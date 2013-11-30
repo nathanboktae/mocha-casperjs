@@ -1,4 +1,4 @@
-if (typeof chai === 'undefined' || !('trueOnRemote' in chai.Assertion.prototype)) {
+if (typeof chai === 'undefined' || !('inDOM' in chai.Assertion.prototype)) {
   console.log('This example requires chai and casper-chai to be installed adjacent to mocha-casperjs')
   casper.exit(-1)
 }
