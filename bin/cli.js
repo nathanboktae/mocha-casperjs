@@ -20,6 +20,11 @@ this.casper = require('casper').create({
   logLevel: opts['log-level'] ||'warning'
 })
 
+if (phantom.casperVersion.major !== 1 && phantom.capserVersion.minor < 1) {
+  console.log('mocha-casperjs requires CasperJS >= 1.1.0-beta3')
+  casper.exit(-1)
+}
+
 // Load the precompiled mocha from the root of it's module directory
 require(getPathForModule('mocha') + '/mocha')
 

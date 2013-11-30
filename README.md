@@ -33,6 +33,8 @@ describe('Google searching', function() {
 
 ## How to use
 
+`mocha-casperjs` is still in active development against the latest `casperjs` and since a couple of issues have arose that required patches, please use the [latest version of casperjs](http://docs.casperjs.org/en/latest/installation.html#from-the-master-branch), if not at least >= 1.1.0-beta3.
+
 ````
 npm install -g mocha-casperjs
 mocha-casperjs
