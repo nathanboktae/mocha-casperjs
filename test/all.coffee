@@ -145,6 +145,21 @@ describe 'mocha-casperjs', ->
             throw new Error 'we should have timed out'
       , 'timeout', done
 
+    it 'should not fail a test twice', (done) ->
+      runMochaCasperJsTest
+        params: ['--timeout=500', '--no-color']
+        before: ->
+          casper.start()
+        test: (done) ->
+          casper.then ->
+            casper.wait 400, ->
+              1.should.not.be.ok
+      , (output, code) ->
+        output.should.not.contain 'multiple'
+        output.should.contain '1 failing'
+        code.should.not.equal 0
+        done()
+
     it 'failCurrentTest should allow tests to be failed', (done) ->
       runMochaCasperJsTest
         test: ->

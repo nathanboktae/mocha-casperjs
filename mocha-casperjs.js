@@ -1,10 +1,11 @@
 module.exports = function (Mocha, casper, utils) {
   var currentDone,
+      currentTest,
       f = utils.format,
 
   failTest = function(error) {
     casper.unwait()
-    if (currentDone) {
+    if (currentDone && (!currentTest || !currentTest.state)) {
       currentDone(error)
     }
   }
@@ -76,16 +77,22 @@ module.exports = function (Mocha, casper, utils) {
       set: function (fn) {
         Object.defineProperty(this, 'casperWraperFn', {
           value: function (done) {
+            currentTest = this.test
             currentDone = done
             // Run the original `fn`, passing along `done` for the case in which it's callback-asynchronous.
             // Make sure to forward the `this` context, since you can set variables and stuff on it to share
             // within a suite.
             fn.call(this, done)
 
-            // only flush the casper steps on test Runnables, and only if there are steps
-            if (this.test && this.test.type === 'test' && casper.steps.length) {
+            // only flush the casper steps on test Runnables,
+            // and if there are steps,
+            // and no set of steps are running (casper.checker is the setInterval for the checkSteps call)
+            if (currentTest && currentTest.type === 'test' && casper.steps && casper.steps.length && !casper.checker) {
               casper.run(function () {
-                done()
+                casper.checker = null
+                if (!currentTest || !currentTest.state) {
+                  done()
+                }
               })
             } else if (fn.length === 0) {
               // If `fn` is synchronous (i.e. didn't have a `done` parameter and didn't return a promise),
