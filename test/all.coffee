@@ -147,7 +147,7 @@ describe 'mocha-casperjs', ->
 
     it 'should not fail a test twice', (done) ->
       runMochaCasperJsTest
-        params: ['--timeout=500', '--no-color']
+        params: ['--timeout=400', '--no-color']
         before: ->
           casper.start()
         test: (done) ->
