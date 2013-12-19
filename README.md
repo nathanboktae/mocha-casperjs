@@ -53,6 +53,9 @@ In addition to specifying options on the command line, you can add them to a `mo
 --invert
 --no-color
 --slow
+--user-agent
+--viewport-width
+--viewport-height
 ````
 
 These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.
@@ -82,6 +85,16 @@ Load [Chai][] from the specified path, otherwise look for it adjacent to mocha-c
 `--casper-chai-path=<path>`
 
 Load [casper-chai][] from the specified path, otherwise look for it adjacent to mocha-casperjs
+
+`--viewport-width=<pixels> --viewport-height=<pixels>`
+
+Set `PhantomJS` viewport to custom size. Useful for testing media queries and capturing screenshots:
+
+```
+casper.on('load.finished', function (resource) {
+  this.captureSelector(screenshots_path + 'body.png', 'body');
+});
+```
 
 ## How it works
 
