@@ -22,8 +22,8 @@ this.casper = require('casper').create({
     userAgent: opts['user-agent']
   },
   viewportSize: {
-    width: opts['viewport-width'] || 400,
-    height: opts['viewport-height'] || 300
+    width: opts['viewport-width'],
+    height: opts['viewport-height']
   }
 })
 
