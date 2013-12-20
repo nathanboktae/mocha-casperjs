@@ -18,7 +18,8 @@ runMochaCasperJsTest = (test, callback) ->
       after(#{ test.after or (->) });
     });", (err) -> throw err if err
 
-  process = spawn './bin/mocha-casperjs', ['--mocha-path=node_modules/mocha', '--chai-path=node_modules/chai', testfile].concat(test.params or [])
+  process = spawn './bin/mocha-casperjs', ['--mocha-path=node_modules/mocha', '--chai-path=node_modules/chai', '--casper-chai-path=node_modules/casper-chai',
+    testfile].concat(test.params or [])
   output = ''
 
   process.stdout.on 'data', (data) ->
@@ -100,7 +101,6 @@ describe 'mocha-casperjs', ->
 
     it 'should have a simple test pass', (done) ->
       thisShouldPass
-        params: ['--casper-chai-path=node_modules/casper-chai']
         test: ->
           casper.waitForSelector 'h1', ->
             /mocha-casperjs/.should.matchTitle
@@ -272,6 +272,21 @@ describe 'mocha-casperjs', ->
         results.stats.failures.should.equal 0
         results.failures.should.be.empty
         done()
+
+    it '--user-agent should set the user agent', (done) ->
+      thisShouldPass
+        params: ['--user-agent=mocha-casperjs-tests'],
+        test: ->
+          casper.page.settings.userAgent.should.equal 'mocha-casperjs-tests'
+      , done
+
+    it '--viewport-width and --viewport-height should set the viewport dimentions', (done) ->
+      thisShouldPass
+        params: ['--viewport-height=400', '--viewport-width=300'],
+        test: ->
+          (-> window.innerWidth).should.evaluate.to.equal 300
+          (-> window.innerHeight).should.evaluate.to.equal 400
+      , done
 
     describe 'mocha-casperjs.opts', ->
       afterEach ->

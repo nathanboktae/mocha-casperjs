@@ -83,11 +83,9 @@ Load [Chai][] from the specified path, otherwise look for it adjacent to mocha-c
 
 Load [casper-chai][] from the specified path, otherwise look for it adjacent to mocha-casperjs
 
-
-
 ### CasperJS options
 
-Also, you can add CasperJS options to a `mocha-casperjs.opts`:
+Also, you can add [CasperJS options](http://docs.casperjs.org/en/latest/modules/casper.html#index-1) to `mocha-casperjs.opts`. Below are the supported options:
 
 ````
 --user-agent
@@ -97,7 +95,7 @@ Also, you can add CasperJS options to a `mocha-casperjs.opts`:
 
 `--user-agent=<userAgent>`
 
-Sets the User-Agent string (like `Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)`) to send through headers when performing requests. 
+Sets the `User-Agent` string (like `Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)`) to send through headers when performing requests. 
 
 `--viewport-width=<pixels> --viewport-height=<pixels>`
 
