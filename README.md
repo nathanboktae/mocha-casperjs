@@ -83,6 +83,32 @@ Load [Chai][] from the specified path, otherwise look for it adjacent to mocha-c
 
 Load [casper-chai][] from the specified path, otherwise look for it adjacent to mocha-casperjs
 
+
+
+### CasperJS options
+
+Also, you can add CasperJS options to a `mocha-casperjs.opts`:
+
+````
+--user-agent
+--viewport-width
+--viewport-height
+````
+
+`--user-agent=<userAgent>`
+
+Sets the User-Agent string (like `Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)`) to send through headers when performing requests. 
+
+`--viewport-width=<pixels> --viewport-height=<pixels>`
+
+Sets the `PhantomJS` viewport to custom size. Useful for testing media queries and capturing screenshots:
+
+```
+casper.on('load.finished', function (resource) {
+  this.captureSelector(screenshots_path + 'body.png', 'body');
+});
+```
+
 ## How it works
 
 mocha-casperjs is a big conglomeration of various ideas and approaches.

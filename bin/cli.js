@@ -17,7 +17,14 @@ this.casper = require('casper').create({
   exitOnError: true,
   timeout: opts['casper-timeout'] || 10000,
   verbose: !!opts.verbose || opts['log-level'] === 'debug',
-  logLevel: opts['log-level'] ||'warning'
+  logLevel: opts['log-level'] ||'warning',
+  pageSettings: {
+    userAgent: opts['user-agent']
+  },
+  viewportSize: {
+    width: opts['viewport-width'],
+    height: opts['viewport-height']
+  }
 })
 
 if (phantom.casperVersion.major !== 1 && phantom.capserVersion.minor < 1) {
