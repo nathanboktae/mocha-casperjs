@@ -288,6 +288,13 @@ describe 'mocha-casperjs', ->
           (-> window.innerHeight).should.evaluate.to.equal 400
       , done
 
+    it 'should handle lots of args', (done) ->
+      thisShouldPass
+        params: ['--slow=30000', '--no-color', '--reporter=json', '--some-flag', '--foo=bar', '--theanswer=42'],
+        test: ->
+          1.should.be.ok
+      , done
+
     describe 'mocha-casperjs.opts', ->
       afterEach ->
         fs.unlinkSync 'mocha-casperjs.opts'

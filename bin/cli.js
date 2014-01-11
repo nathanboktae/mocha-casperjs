@@ -8,8 +8,11 @@ getPathForModule = function(what) {
 }
 
 if (fs.exists('mocha-casperjs.opts')) {
-  var rawOpts = fs.read('mocha-casperjs.opts').split('\n')
-  opts = require('utils').mergeObjects(cli.parse(rawOpts).options, opts)
+  var extraOpts = cli.parse(fs.read('mocha-casperjs.opts').split('\n')).options
+
+  for (var p in extraOpts) {
+    opts[p] = extraOpts[p]
+  }
 }
 
 // Load casper
@@ -47,13 +50,13 @@ try {
   // optionally try to use casper-chai if available
   try {
     this.chai.use(require(getPathForModule('casper-chai')))
-    casper.log('using casper-chai', 'debug')
+    casper.log('using casper-chai', 'debug', 'mocha-casperjs')
   }
   catch (e) {
-    casper.log('could not load casper-chai: ' + e, 'debug')
+    casper.log('could not load casper-chai: ' + e, 'debug', 'mocha-casperjs')
   }
 } catch (e) {
-  casper.log('could not load chai ' + e, 'debug')
+  casper.log('could not load chai ' + e, 'debug', 'mocha-casperjs')
 }
 
 // Initialize the core of mocha-casperjs given the loaded Mocha class and casper instance
