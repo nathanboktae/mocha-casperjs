@@ -65,6 +65,9 @@ module.exports = function (Mocha, casper, utils) {
   // clear Casper's default handlers for these because handle everything through events
   casper.options.onTimeout = casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
 
+  // casper will exit on step failure by default
+  casper.options.silentErrors = true
+
   // Method for patching mocha to run casper steps is inspired by https://github.com/domenic/mocha-as-promised
   //
   Object.defineProperties(Mocha.Runnable.prototype, {

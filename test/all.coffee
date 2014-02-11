@@ -121,6 +121,22 @@ describe 'mocha-casperjs', ->
             1.should.not.be.ok
       , 'AssertionError', done
 
+    it 'should not exit abruptly when a step fails', (done) ->
+      runMochaCasperJsTest
+        params: ['--reporter=json'],
+        test: ->
+          casper.then ->  
+            1.should.not.be.ok
+      , (output, code) ->
+        try
+          results = JSON.parse output
+        catch
+          throw new Error 'Expected JSON output from the reporter, instead was' + output
+        results.stats.passes.should.equal 0
+        results.stats.failures.should.equal 1
+        code.should.equal 1
+        done()
+
     it 'should fail when a step fails in before', (done) ->
       thisShouldFailWith
         before: ->
