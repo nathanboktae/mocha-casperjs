@@ -1,0 +1,3 @@
+--compilers coffee:coffee-script/register
+-t 15000
+-R spec
