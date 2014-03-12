@@ -293,6 +293,18 @@ describe 'mocha-casperjs', ->
         results.failures.should.be.empty
         done()
 
+    it '--reporter should import a third-party reporter module', (done) ->
+      runMochaCasperJsTest
+        params: ['--reporter=./reporters/jason']
+        test: ->
+          1.should.be.ok
+      , (output, code) ->
+        results = JSON.parse output
+        results.stats.passes.should.equal 1
+        results.stats.failures.should.equal 0
+        results.failures.should.be.empty
+        done()
+
     it '--user-agent should set the user agent', (done) ->
       thisShouldPass
         params: ['--user-agent=mocha-casperjs-tests'],
