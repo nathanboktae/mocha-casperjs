@@ -107,6 +107,14 @@ casper.on('load.finished', function (resource) {
 });
 ```
 
+## Custom 3rd party Reporters
+
+You can provide your own reporter via the `--reporter` flag. mocha-phantomjs will try to `require` the module and load it. Some things to take note of:
+
+- Both node modules and script files can be required, so for relative paths to scripts, make sure they start with '.'. E.g. use `--reporter=./foo` to load `foo.js` that is in the current directory. CoffeeScript files can be directly required too, as phantomjs has coffeescript built in.
+- PhantomJS is not node.js. You won't have access to standard node modules like `url`, `http`, etc. Refer to [PhantomJS's built in modules](https://github.com/ariya/phantomjs/wiki/API-Reference#wiki-module-api). However, mocha-casperjs does provide a very minimalistic `process` shim to PhantomJS's `system` module.
+- If you want access to built-in Mocha reporters, they are available on `Mocha.reporters`. For example, `Mocha.reporters.Base`.
+
 ## How it works
 
 mocha-casperjs is a big conglomeration of various ideas and approaches.
