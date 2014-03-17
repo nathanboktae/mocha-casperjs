@@ -86,14 +86,16 @@ catch (e) {
     }
   }
 
+  // I don't want to use isAbsolute here as it could be a node module or a relative path
+  if (opts.reporter.indexOf('.') === 0) {
+    opts.reporter = fs.absolute(opts.reporter)
+  }
+
   // phantomjs exits immediately if it can't find a module due to exitOnError: true from above... that should probably be false
   // either way a module may lazily require something and fail later, so a try/catch with an informative message isn't possible now.
   //
   // Remember that PhantomJS is not Node.js - the modules available to phantomjs are different than node's.
   // If you need access to built-in Mocha reporters, access them off of `Mocha.reporters`, like `Mocha.reporters.Base`.
-  if (opts.reporter.indexOf('.') === 0) {
-    opts.reporter = fs.absolute(opts.reporter)
-  }
   mocha.reporter(require(opts.reporter))
 }
 
