@@ -15,6 +15,13 @@ if (fs.exists('mocha-casperjs.opts')) {
   }
 }
 
+// Load XPath helper
+try {
+  this.selectXPath = require('casper').selectXPath;
+} catch (e) {
+  casper.log('could not load XPath helper ' + e, 'debug', 'mocha-casperjs');
+}
+
 // Load casper
 this.casper = require('casper').create({
   exitOnError: true,
