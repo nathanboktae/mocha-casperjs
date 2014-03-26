@@ -67,7 +67,7 @@ describe 'mocha-casperjs', ->
         res.statusCode = echoStatus[1]
         res.end()
       else if req.url is '/sample'
-        res.writeHead '200', 
+        res.writeHead '200',
           'Content-Type': 'text/html'
         res.end sampleHtml
       else if req.url is '/timeout'
@@ -79,13 +79,13 @@ describe 'mocha-casperjs', ->
         res.write '404'
         res.end()
     server.listen 10473
-  
+
 
   describe 'Mocha Runnable shim', ->
     it 'should flush all the steps at the end of a test', (done) ->
       thisShouldPass
         test: ->
-          casper.then ->  
+          casper.then ->
             mocha.stepsRan = true
         after: ->
           mocha.stepsRan.should.be.true.mmmkay
@@ -112,8 +112,13 @@ describe 'mocha-casperjs', ->
             'h1'.should.have.text 'Hello World!'
       , done
 
+    it 'should expose the selectXPath module as the `xpath` global', (done) ->
+      thisShouldPass
+        test: ->
+          xpath.should.be.a('function')
+      , done
 
-  describe 'CasperJS error handling', ->   
+  describe 'CasperJS error handling', ->
     it 'should fail when a step fails', (done) ->
       thisShouldFailWith
         test: ->
@@ -125,7 +130,7 @@ describe 'mocha-casperjs', ->
       runMochaCasperJsTest
         params: ['--reporter=json'],
         test: ->
-          casper.then ->  
+          casper.then ->
             1.should.not.be.ok
       , (output, code) ->
         try
@@ -185,7 +190,7 @@ describe 'mocha-casperjs', ->
         test: ->
           casper.on 'page.error', (msg, trace) ->
             mocha.failCurrentTest new Error('error from page: ' + msg)
-          casper.evaluate ->  
+          casper.evaluate ->
             window.foobarkaboom.blahblah
       , (output, code) ->
         code.should.not.equal 0
@@ -199,7 +204,7 @@ describe 'mocha-casperjs', ->
       runMochaCasperJsTest
         params: ['--reporter=json'],
         test: ->
-          casper.then ->  
+          casper.then ->
             1.should.be.ok
       , (output, code) ->
         results = JSON.parse output
@@ -348,7 +353,6 @@ describe 'mocha-casperjs', ->
           results = JSON.parse output
           results.stats.passes.should.equal 1
           results.stats.failures.should.equal 0
-          done()       
+          done()
 
   after -> server.close()
-    
