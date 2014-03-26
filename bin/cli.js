@@ -2,6 +2,7 @@ var cli = require('cli'),
     cliOptions = cli.parse(phantom.args),
     opts = cliOptions.options,
     fs = require('fs'),
+    Casper = require('casper'),
 
 getPathForModule = function(what) {
   return fs.absolute(opts[what + '-path'] || opts['mocha-casperjs-path'] + '/../../node_modules/' + what)
@@ -15,15 +16,8 @@ if (fs.exists('mocha-casperjs.opts')) {
   }
 }
 
-// Load XPath helper
-try {
-  this.selectXPath = require('casper').selectXPath;
-} catch (e) {
-  casper.log('could not load XPath helper ' + e, 'debug', 'mocha-casperjs');
-}
-
 // Load casper
-this.casper = require('casper').create({
+this.casper = Casper.create({
   exitOnError: true,
   timeout: opts['casper-timeout'] || 10000,
   verbose: !!opts.verbose || opts['log-level'] === 'debug',
@@ -36,6 +30,7 @@ this.casper = require('casper').create({
     height: opts['viewport-height']
   }
 })
+this.xpath = Casper.selectXPath
 
 if (phantom.casperVersion.major !== 1 && phantom.capserVersion.minor < 1) {
   console.log('mocha-casperjs requires CasperJS >= 1.1.0-beta3')

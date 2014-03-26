@@ -112,10 +112,11 @@ describe 'mocha-casperjs', ->
             'h1'.should.have.text 'Hello World!'
       , done
 
-    it 'should present casper XPath helper', (done) ->
+    it 'should expose the selectXPath module as the `xpath` global', (done) ->
       thisShouldPass
         test: ->
-          selectXPath.should.be.a.function
+          xpath.should.be.a('function')
+      , done
 
   describe 'CasperJS error handling', ->
     it 'should fail when a step fails', (done) ->
