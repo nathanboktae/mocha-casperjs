@@ -42,6 +42,14 @@ mocha-casperjs
 
 Like Mocha, if you place your tests in the `test` or `tests` directory, it will find them and run them. You can also specify tests to run individually instead.
 
+## Additional Conveniences
+
+If [chai][] is discovered (it must be installed adjacent to mocha-casperjs), it will automatically use the `should` style as well as expose `expect` globally.
+
+If [casper-chai][] is discovered, it will be used with chai.
+
+The [selectXPath](http://casperjs.readthedocs.org/en/latest/selectors.html#index-2) casper helper method is exposed globally as `xpath`.
+
 ## Command Line Options
 
 In addition to specifying options on the command line, you can add them to a `mocha-casperjs.opts` [like mocha.opts](http://visionmedia.github.io/mocha/#mocha.opts), except it looks for this file in the current directory.
@@ -50,6 +58,7 @@ In addition to specifying options on the command line, you can add them to a `mo
 --reporter
 --timeout
 --grep
+--ui
 --invert
 --no-color
 --slow
@@ -62,10 +71,6 @@ Note the CasperJS cli parser does not support shorthands or spaces between param
 `--casper-timeout=<timeout in ms>`
 
 Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha's.
-
-`--expect`
-
-Expose `chai.expect` as global `expect`
 
 `--file=<file>`
 
