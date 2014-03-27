@@ -214,9 +214,8 @@ describe 'mocha-casperjs', ->
         done()
 
   describe 'Command line options', ->
-    it '--expect should expose chai.expect globally', (done) ->
+    it 'should always expose chai.expect globally', (done) ->
       thisShouldPass
-        params: ['--expect'],
         before: (->)
         test: ->
           expect('hi').to.be.a 'string'

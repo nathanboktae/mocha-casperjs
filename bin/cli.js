@@ -44,10 +44,8 @@ try {
   this.chai = require(getPathForModule('chai'))
   this.chai.should()
 
-  // expose expect globally if requested
-  if (opts.expect) {
-    this.expect = this.chai.expect
-  }
+  // expect globally if requested
+  this.expect = this.chai.expect
 
   // optionally try to use casper-chai if available
   try {
@@ -65,7 +63,7 @@ try {
 require(fs.absolute((opts['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(Mocha, casper, require('utils'))
 
 mocha.setup({
-  ui: 'bdd',
+  ui: opts.ui || 'bdd',
   timeout: opts.timeout || 30000,
   useColors: !opts['no-color']
 })
