@@ -339,18 +339,22 @@ describe 'mocha-casperjs', ->
         fs.unlinkSync 'mocha-casperjs.opts'
 
       it 'should apply options from the file if available', (done) ->
-        fs.writeFileSync 'mocha-casperjs.opts', '--expect'
-        thisShouldPass
+        fs.writeFileSync 'mocha-casperjs.opts', '--reporter=json'
+        runMochaCasperJsTest
           test: ->
-            expect('hi').to.be.a 'string'
-        , done
+            'hi'.should.be.a 'string'
+        , (output, code) ->
+          results = JSON.parse output
+          results.stats.passes.should.equal 1
+          results.stats.failures.should.equal 0
+          done()
 
       it 'should merge with command line opitons, prioritizing the command line', (done) ->
-        fs.writeFileSync 'mocha-casperjs.opts', 'reporter=min\n--expect'
+        fs.writeFileSync 'mocha-casperjs.opts', '--reporter=spec\n--user-agent=mocha-casperjs-tests'
         runMochaCasperJsTest
           params: ['--reporter=json']
           test: ->
-            expect('hi').to.be.a 'string'
+            casper.page.settings.userAgent.should.equal 'mocha-casperjs-tests'
         , (output, code) ->
           results = JSON.parse output
           results.stats.passes.should.equal 1

@@ -9,10 +9,12 @@ getPathForModule = function(what) {
 }
 
 if (fs.exists('mocha-casperjs.opts')) {
-  var extraOpts = cli.parse(fs.read('mocha-casperjs.opts').split('\n')).options
+  var extraOpts = cli.parse(['blah'].concat(fs.read('mocha-casperjs.opts').split('\n'))).options
 
   for (var p in extraOpts) {
-    opts[p] = extraOpts[p]
+    if (opts[p] == null) {
+      opts[p] = extraOpts[p]
+    }
   }
 }
 
