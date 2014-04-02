@@ -90,7 +90,7 @@ module.exports = function (Mocha, casper, utils) {
             // only flush the casper steps on test Runnables,
             // and if there are steps,
             // and no set of steps are running (casper.checker is the setInterval for the checkSteps call)
-            if (currentTest && currentTest.type === 'test' && casper.steps && casper.steps.length && !casper.checker) {
+            if (currentTest && casper.steps && casper.steps.length && !casper.checker) {
               casper.run(function () {
                 casper.checker = null
                 if (!currentTest || !currentTest.state) {

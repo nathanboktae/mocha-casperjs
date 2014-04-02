@@ -7,16 +7,15 @@ chai.should()
 
 runMochaCasperJsTest = (test, callback) ->
   if typeof test is 'string'
-    testfile = test
+    testfile = "#{__dirname}/#{test}"
   else if typeof test is 'object'
     testfile = __dirname + '/temptest.js'
-
-  fs.writeFile testfile, "
-    describe('in casperjs', function() {
-      before(#{ test.before or (-> casper.start('http://localhost:10473/sample')) });
-      it('the test', #{ test.test });
-      after(#{ test.after or (->) });
-    });", (err) -> throw err if err
+    fs.writeFile testfile, "
+      describe('in casperjs', function() {
+        before(#{ test.before or (-> casper.start('http://localhost:10473/sample')) });
+        it('the test', #{ test.test });
+        after(#{ test.after or (->) });
+      });", (err) -> throw err if err
 
   process = spawn './node_modules/casperjs/bin/casperjs', [
     './bin/cli.js',
@@ -39,7 +38,8 @@ thisShouldPass = (test, done) ->
       throw new Error 'expected the test to pass, but it did not. Output above'
     done()
 
-thisShouldFailWith = (test, failureText, done) ->
+thisShouldFailWith = (test, failureText, expectedCode, done) ->
+  done = expectedCode if not done?
   runMochaCasperJsTest test, (output, code) ->
     if code is 0 or output.indexOf(failureText) < 0
       console.log output
@@ -151,6 +151,9 @@ describe 'mocha-casperjs', ->
           casper.then ->
             1.should.be.ok
       , 'boom', done
+
+    it 'should fail subsequent tests if a before fails', (done) ->
+      thisShouldFailWith 'failing-before.js', '"before all" hook', 1, done
 
     it 'should fail when waitFor times out', (done) ->
       thisShouldFailWith
