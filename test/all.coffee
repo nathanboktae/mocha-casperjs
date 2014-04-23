@@ -41,9 +41,10 @@ thisShouldPass = (test, done) ->
 thisShouldFailWith = (test, failureText, expectedCode, done) ->
   done = expectedCode if not done?
   runMochaCasperJsTest test, (output, code) ->
-    if code is 0 or output.indexOf(failureText) < 0
+    if code is 0 or output.indexOf(failureText) < 0 and (typeof expectedCode isnt 'number' or code is expectedCode)
       console.log output
       throw new Error 'expected the test to fail with "' + failureText + '" in the failures, but it passed'
+    
     done()
 
 sampleHtml = '<!doctype html>
@@ -152,8 +153,11 @@ describe 'mocha-casperjs', ->
             1.should.be.ok
       , 'boom', done
 
-    it 'should fail subsequent tests if a before fails', (done) ->
+    it 'should fail nested tests if a before fails', (done) ->
       thisShouldFailWith 'failing-before.js', '"before all" hook', 1, done
+
+    it 'should not fail subsequent tests if a before fails in another describe block', (done) ->
+      thisShouldFailWith 'failing-subsequent.js', 'subsequent-failure', 2, done
 
     it 'should fail when waitFor times out', (done) ->
       thisShouldFailWith

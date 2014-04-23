@@ -5,6 +5,8 @@ module.exports = function (Mocha, casper, utils) {
 
   failTest = function(error) {
     casper.unwait()
+    casper.checker = null
+    clearInterval(casper.checker)
     if (currentDone && (!currentTest || !currentTest.state)) {
       currentDone(error)
     }
@@ -88,16 +90,17 @@ module.exports = function (Mocha, casper, utils) {
             fn.call(this, done)
 
             // only flush the casper steps on test Runnables,
-            // and if there are steps,
+            // and if there are steps not ran,
             // and no set of steps are running (casper.checker is the setInterval for the checkSteps call)
-            if (currentTest && casper.steps && casper.steps.length && !casper.checker) {
+            if (currentTest && casper.steps && casper.steps.length &&
+                casper.step < casper.steps.length && !casper.checker) {
               casper.run(function () {
                 casper.checker = null
                 if (!currentTest || !currentTest.state) {
                   done()
                 }
               })
-            } else if (fn.length === 0) {
+            } else if (fn.length === 0 && currentTest && !currentTest.state) {
               // If `fn` is synchronous (i.e. didn't have a `done` parameter and didn't return a promise),
               // call `done` now. (If it's callback-asynchronous, `fn` will call `done` eventually since
               // we passed it in above.)
