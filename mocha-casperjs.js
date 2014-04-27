@@ -5,8 +5,8 @@ module.exports = function (Mocha, casper, utils) {
 
   failTest = function(error) {
     casper.unwait()
-    casper.checker = null
     clearInterval(casper.checker)
+    casper.checker = null
     if (currentDone && (!currentTest || !currentTest.state)) {
       currentDone(error)
     }
@@ -64,7 +64,7 @@ module.exports = function (Mocha, casper, utils) {
     failTest(new Error(f('Load timeout of (%dms)', casper.options.timeout)))
   })
 
-  // clear Casper's default handlers for these because handle everything through events
+  // clear Casper's default handlers for these as we handle everything through events
   casper.options.onTimeout = casper.options.onWaitTimeout = casper.options.onStepTimeout = function() {}
 
   // casper will exit on step failure by default

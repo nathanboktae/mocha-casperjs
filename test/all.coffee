@@ -14,7 +14,7 @@ runMochaCasperJsTest = (test, callback) ->
       describe('in casperjs', function() {
         before(#{ test.before or (-> casper.start('http://localhost:10473/sample')) });
         it('the test', #{ test.test });
-        after(#{ test.after or (->) });
+        #{ if test.after then 'after(' + (->) + ');' else '' }
       });", (err) -> throw err if err
 
   process = spawn './node_modules/casperjs/bin/casperjs', [
