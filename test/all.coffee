@@ -6,8 +6,8 @@ chai = require 'chai'
 chai.should()
 
 runMochaCasperJsTest = (test, callback) ->
-  if typeof test is 'string'
-    testfile = "#{__dirname}/#{test}"
+  if typeof test is 'string' or typeof test.test is 'string'
+    testfile = "#{__dirname}/#{test.test or test}"
   else if typeof test is 'object'
     testfile = __dirname + '/temptest.js'
     fs.writeFile testfile, "
@@ -315,6 +315,12 @@ describe 'mocha-casperjs', ->
         results.stats.failures.should.equal 0
         results.failures.should.be.empty
         done()
+
+    it '--bail should fail on the first failure', (done) ->
+      thisShouldFailWith
+        params: ['--bail', '--reporter=dot'],
+        test: 'failing-subsequent'
+      , '1 failing', 1, done
 
     it '--user-agent should set the user agent', (done) ->
       thisShouldPass

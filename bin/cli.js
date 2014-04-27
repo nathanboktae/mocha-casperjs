@@ -67,6 +67,7 @@ require(fs.absolute((opts['mocha-casperjs-path'] || '..') + '/mocha-casperjs'))(
 mocha.setup({
   ui: opts.ui || 'bdd',
   timeout: opts.timeout || 30000,
+  bail: opts.bail || false,
   useColors: !opts['no-color']
 })
 
