@@ -5,7 +5,7 @@ Combine the power of [casperjs][]' automation with [Mocha][]'s robust testing fr
 ## Features
 - automatically load Casper, Mocha, and optionally [chai][] and [casper-chai][]
 - automatically run your Casper steps after each test
-- use any Mocha reporter that can run in the [phantomjs][] or [slimerjs][] environment
+- use any Mocha reporter that can run in the [phantomjs][] environment
 
 For example, let's rewrite Casper's [google testing example](http://docs.casperjs.org/en/latest/testing.html#browser-tests)
 
@@ -33,14 +33,16 @@ describe('Google searching', function() {
 
 ## How to use
 
-`mocha-casperjs` is still in active development against the latest `casperjs` and since a couple of issues have arose that required patches, please use the [latest version of casperjs](http://docs.casperjs.org/en/latest/installation.html#from-the-master-branch), if not at least >= 1.1.0-beta3.
-
 ````
 npm install -g mocha-casperjs
 mocha-casperjs
 ````
 
 Like Mocha, if you place your tests in the `test` or `tests` directory, it will find them and run them. You can also specify tests to run individually instead.
+
+Note that mocha-casperjs has peer dependencies on casper and mocha, and will be installed ajacent to where you are installing mocha-casperjs (e.g. if you install mocha-casperjs globally, you'll have mocha and casperjs also installed globally).
+
+Note that [slimerjs][] isn't [supported at the moment](https://github.com/nathanboktae/mocha-casperjs/issues/5)
 
 ## Additional Conveniences
 
@@ -62,6 +64,7 @@ In addition to specifying options on the command line, you can add them to a `mo
 --invert
 --no-color
 --slow
+--bail
 ````
 
 These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.
