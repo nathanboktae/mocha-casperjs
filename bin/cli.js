@@ -111,6 +111,9 @@ if (opts.grep) {
 
 if (opts.file) {
   Mocha.process.stdout = fs.open(opts.file, 'w')
+  if (this.process) {
+    this.process.stdout = Mocha.process.stdout
+  }
 }
 
 if (opts.slow) {

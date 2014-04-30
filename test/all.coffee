@@ -316,6 +316,20 @@ describe 'mocha-casperjs', ->
         results.failures.should.be.empty
         done()
 
+    it 'using --file with a third-party reporter should pipe it\'s output to that file', (done) ->
+      runMochaCasperJsTest
+        params: ['--reporter=./reporters/jason', '--file=filepipe.json']
+        test: ->
+          casper.log 'bla blah that is not valid json', 'info'
+          1.should.be.ok
+      , (output, code) ->
+        results = JSON.parse fs.readFileSync 'filepipe.json'
+        fs.unlink 'filepipe.json', (->)
+        results.stats.passes.should.equal 1
+        results.stats.failures.should.equal 0
+        results.failures.should.be.empty
+        done()
+
     it '--bail should fail on the first failure', (done) ->
       thisShouldFailWith
         params: ['--bail', '--reporter=dot'],
