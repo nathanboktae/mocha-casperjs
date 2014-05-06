@@ -99,6 +99,7 @@ Also, you can add [CasperJS options](http://docs.casperjs.org/en/latest/modules/
 --user-agent
 --viewport-width
 --viewport-height
+--client-scripts
 ````
 
 `--user-agent=<userAgent>`
@@ -114,6 +115,10 @@ casper.on('load.finished', function (resource) {
   this.captureSelector(screenshots_path + 'body.png', 'body');
 });
 ```
+
+`--client-scripts=<file1>,<file2>`
+
+A comma seperated list of files to inject into the remote client every page load.
 
 ## Custom 3rd party Reporters
 

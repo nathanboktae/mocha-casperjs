@@ -351,6 +351,21 @@ describe 'mocha-casperjs', ->
           (-> window.innerHeight).should.evaluate.to.equal 400
       , done
 
+    it '--client-scripts should inject client scripts via casper options', (done) ->
+      thisShouldPass
+        params: ['--client-scripts=test/client-injection-1.js'],
+        test: ->
+          (-> window.injection1).should.evaluate.to.equal 'Client Injection script one'
+      , done
+
+    it '--client-scripts should allow multiple scripts', (done) ->
+      thisShouldPass
+        params: ['--client-scripts=test/client-injection-1.js,test/client-injection-2.js'],
+        test: ->
+          (-> window.injection1).should.evaluate.to.equal 'Client Injection script one'
+          (-> window.injection2).should.evaluate.to.equal 'Client Injection script two'
+      , done
+
     it 'should handle lots of args', (done) ->
       thisShouldPass
         params: ['--slow=30000', '--no-color', '--reporter=json', '--some-flag', '--foo=bar', '--theanswer=42'],

@@ -1,0 +1,1 @@
+window.injection1 = 'Client Injection script one'

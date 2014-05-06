@@ -32,6 +32,10 @@ this.casper = Casper.create({
     height: opts['viewport-height']
   }
 })
+if (typeof opts['client-scripts'] === 'string') {
+  this.casper.options.clientScripts = opts['client-scripts'].split(',')
+}
+
 this.xpath = Casper.selectXPath
 
 if (phantom.casperVersion.major !== 1 && phantom.capserVersion.minor < 1) {
