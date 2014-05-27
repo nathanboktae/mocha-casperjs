@@ -1,5 +1,32 @@
 #!/bin/sh
 
+if [ $1 == "--help" ] || [ $1 == "-h" ] ; then
+ echo "   mocha-casperjs usage"
+ echo "      options must be in the format of --option=value\n"
+ echo "   --casper-timeout    Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha's."
+ echo "   --file              Pipe reporter output to the specified file instead of standard out."
+ echo "   --mocha-path        Override path for mocha"
+ echo "   --chai-path         Override path for chai"
+ echo "   --casper-chai-path  Override path for casper-chai"
+ echo "\n   Mocha options"
+ echo "   --reporter          Reporter to use. Use relative or absolute paths for 3rd party reporters."
+ echo "   --timeout           Set the timeout for Mocha tests"
+ echo "   --grep              Only run tests matching a pattern"
+ echo "   --invert            Only run tests not matching the pattern specified by --grep"
+ echo "   --ui                Tests style ('bdd', 'tdd', or 'exports')"
+ echo "   --no-color          Disable color output"
+ echo "   --slow              Sets the threshold for marking tests as slow running"
+ echo "   --bail              Exit on the first test failure"
+
+ echo "\n   Casper Options"
+ echo "   --user-agent        User agent string to use on requests"
+ echo "   --viewport-width    Size of the viewport width"
+ echo "   --viewport-height   Size of the viewport height"
+ echo "   --client-scripts    Comma-separated array of lists to inject on the client every page load"
+
+ exit 0
+fi
+
 mcPath=$(dirname $0)
 symLink=$(readlink $0)
 if [ ! -z "$symLink" ]; then
