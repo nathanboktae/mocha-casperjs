@@ -21,7 +21,7 @@ if (fs.exists('mocha-casperjs.opts')) {
 // Load casper
 this.casper = Casper.create({
   exitOnError: true,
-  timeout: opts['casper-timeout'] || 10000,
+  timeout: opts['casper-timeout'],
   verbose: !!opts.verbose || opts['log-level'] === 'debug',
   logLevel: opts['log-level'] ||'warning',
   pageSettings: {
