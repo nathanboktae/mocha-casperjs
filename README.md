@@ -73,7 +73,7 @@ Note the CasperJS cli parser does not support shorthands or spaces between param
 
 `--casper-timeout=<timeout in ms>`
 
-Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha's.
+Set Casper's timeout. If not set, no timeout will happen. This is one overall timeout for the entire test run.
 
 `--file=<file>`
 
@@ -127,6 +127,12 @@ You can provide your own reporter via the `--reporter` flag. mocha-phantomjs wil
 - Both node modules and script files can be required, so for relative paths to scripts, make sure they start with '.'. E.g. use `--reporter=./foo` to load `foo.js` that is in the current directory. CoffeeScript files can be directly required too, as phantomjs has coffeescript built in.
 - PhantomJS is not node.js. You won't have access to standard node modules like `url`, `http`, etc. Refer to [PhantomJS's built in modules](https://github.com/ariya/phantomjs/wiki/API-Reference#wiki-module-api). However, mocha-casperjs does provide a very minimalistic `process` shim to PhantomJS's `system` module.
 - If you want access to built-in Mocha reporters, they are available on `Mocha.reporters`. For example, `Mocha.reporters.Base`.
+
+## Tips to writing tests
+
+1. Only call `casper.start` once. casper initializes state in this call and it doesn't support being called twice. use `casper.thenOpen` if you need to navigate to another page later on
+2. Make sure your casper operations are in a step. If a step isn't added in a test or test hook, mocha-casperjs will not tell mocha to wait for casper.
+3. Capser's timeout is overall for the entire test run, and mocha's timeout is per hook/test. Casper uses separate timeouts for waits, and they can be overridden every `waitFor` call. Mocha also allows overridding timeout per test and hook.
 
 ## How it works
 
