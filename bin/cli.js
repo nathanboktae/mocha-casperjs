@@ -41,9 +41,6 @@ if (typeof opts['wait-timeout'] === 'number') {
 if (typeof opts['step-timeout'] === 'number') {
   this.casper.options.stepTimeout = opts['step-timeout']
 }
-if (typeof opts['retry-timeout'] === 'number') {
-  this.casper.options.retryTimeout = opts['retry-timeout']
-}
 
 this.xpath = Casper.selectXPath
 
