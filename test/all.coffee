@@ -258,11 +258,11 @@ describe 'mocha-casperjs', ->
 
     it '--step-timeout should set Casper\'s stepTimeout for steps', (done) ->
       thisShouldFailWith
-        params: ['--step-timeout=414']
+        params: ['--step-timeout=139']
         test: ->
           casper.then ->
-            casper.wait 500, -> throw new Error 'this should not happen'
-      , '414', done
+            casper.wait 800, -> throw new Error 'this should not happen'
+      , '139', done
 
     it '--grep should filter tests', (done) ->
       runMochaCasperJsTest
