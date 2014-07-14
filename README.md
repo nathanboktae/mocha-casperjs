@@ -75,6 +75,14 @@ Note the CasperJS cli parser does not support shorthands or spaces between param
 
 Set Casper's timeout. If not set, no timeout will happen. This is one overall timeout for the entire test run.
 
+`--wait-timeout=<timeout in ms>`
+
+Set Casper's waitTimeout, the timeout used by the `waitFor*` family of functions. If not set, the casper default is used (as of this writting, it is 5 seconds)
+
+`--step-timeout=<timeout in ms>`
+
+Set Casper's stepTimeout, the timeout for individual steps. If not set, the casper default is used (as of this writing, no timeout is set).
+
 `--file=<file>`
 
 Pipe reporter output to the specified file instead of standard out. Use this if you have to filter out console messages from reporter output, like for `json`, `xunit`, etc. type of reporters

@@ -35,6 +35,15 @@ this.casper = Casper.create({
 if (typeof opts['client-scripts'] === 'string') {
   this.casper.options.clientScripts = opts['client-scripts'].split(',')
 }
+if (typeof opts['wait-timeout'] === 'number') {
+  this.casper.options.waitTimeout = opts['wait-timeout']
+}
+if (typeof opts['step-timeout'] === 'number') {
+  this.casper.options.stepTimeout = opts['step-timeout']
+}
+if (typeof opts['retry-timeout'] === 'number') {
+  this.casper.options.retryTimeout = opts['retry-timeout']
+}
 
 this.xpath = Casper.selectXPath
 

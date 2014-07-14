@@ -228,25 +228,41 @@ describe 'mocha-casperjs', ->
           expect('hi').to.be.a 'string'
       , done
 
-    it '--casper-timeout should set Casper\'s timeout value', (done) ->
-      thisShouldFailWith
-        params: ['--casper-timeout=1234']
-        before: ->
-          casper.start 'http://localhost:10473/timeout'
-        test: ->
-          casper.then ->
-            throw new Error 'we should have timed out'
-      , '1234', done
-
     it '--timeout should set Mocha\'s timeout value', (done) ->
       thisShouldFailWith
-        params: ['--timeout=789']
+        params: ['--timeout=139']
         before: ->
           casper.start 'http://localhost:10473/timeout'
         test: ->
           casper.then ->
             throw new Error 'we should have timed out'
-      , 'timeout of 789ms exceeded', done
+      , 'timeout of 139ms exceeded', done
+
+    it '--casper-timeout should set Casper\'s timeout value', (done) ->
+      thisShouldFailWith
+        params: ['--casper-timeout=414']
+        before: ->
+          casper.start 'http://localhost:10473/timeout'
+        test: ->
+          casper.then ->
+            throw new Error 'we should have timed out'
+      , '414', done
+
+    it '--wait-timeout should set Casper\'s waitTimeout for wait* functions', (done) ->
+      thisShouldFailWith
+        params: ['--wait-timeout=105']
+        test: ->
+          casper.waitForSelector '.nonexistant', ->
+            throw new Error 'we should have timed out'
+      , '105', done
+
+    it '--step-timeout should set Casper\'s stepTimeout for steps', (done) ->
+      thisShouldFailWith
+        params: ['--step-timeout=414']
+        test: ->
+          casper.then ->
+            casper.wait 500, -> throw new Error 'this should not happen'
+      , '414', done
 
     it '--grep should filter tests', (done) ->
       runMochaCasperJsTest

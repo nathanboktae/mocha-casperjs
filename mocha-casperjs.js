@@ -57,8 +57,8 @@ module.exports = function (Mocha, casper, utils) {
     failTest(new Error(message))
   })
 
-  casper.on('step.timeout', function(step, timeout) {
-    failTest(new Error(f('step %d timed out (%dms)', step, timeout)))
+  casper.on('step.timeout', function(step) {
+    failTest(new Error(f('step %d timed out (%dms)', step, casper.options.stepTimeout)))
   })
   casper.on('timeout', function() {
     failTest(new Error(f('Load timeout of (%dms)', casper.options.timeout)))
