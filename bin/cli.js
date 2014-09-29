@@ -56,6 +56,15 @@ try {
   this.chai = require(getPathForModule('chai'))
   this.chai.should()
 
+  // ugly but isolated hack for #40
+  if (typeof casper.__proto__.fetchText === 'function' && casper.__proto__.fetchText.toString().indexOf('fetchText') === -1) {
+    casper.log('restoring Casper#fetchText', 'debug', 'mocha-casperjs')
+    casper.__proto__.fetchText = function(selector) {
+      this.checkStarted()
+      return this.callUtils("fetchText", selector)
+    }
+  }
+
   // expect globally if requested
   this.expect = this.chai.expect
 
