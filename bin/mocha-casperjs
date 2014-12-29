@@ -4,7 +4,7 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ] ; then
  echo "   mocha-casperjs usage"
  echo "      options must be in the format of --option=value\n"
  echo "   --casper-timeout    Set Casper's timeout. Defaults to 5 seconds. You will want this less than Mocha's."
- echo "   --file              Pipe reporter output to the specified file instead of standard out."
+ echo "   --file              Pipe reporter output to the specified file instead of standard out. *Reporter must use `process.stdout.write`*"
  echo "   --mocha-path        Override path for mocha"
  echo "   --chai-path         Override path for chai"
  echo "   --casper-chai-path  Override path for casper-chai"

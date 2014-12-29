@@ -85,7 +85,7 @@ Set Casper's stepTimeout, the timeout for individual steps. If not set, the casp
 
 `--file=<file>`
 
-Pipe reporter output to the specified file instead of standard out. Use this if you have to filter out console messages from reporter output, like for `json`, `xunit`, etc. type of reporters
+Pipe reporter output to the specified file instead of standard out. Use this if you have to filter out console messages from reporter output, like for `json`, `xunit`, etc. type of reporters. However, this only works if you the reporter uses `process.stdout.write`. If it uses `console.log`, mocha-casperjs cannot distinquish reporter output from test output. In that case, simply pipe the output to a file.
 
 `--mocha-path=<path>`
 
