@@ -9,7 +9,7 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ] ; then
  echo "   --chai-path         Override path for chai"
  echo "   --casper-chai-path  Override path for casper-chai"
  echo "\n   Mocha options"
- echo "   --reporter          Reporter to use. Use relative or absolute paths for 3rd party reporters."
+ echo "   --reporter          Reporter to use. Use relative or absolute paths for 3rd party reporters. *PhantomJS is not Node.js*"
  echo "   --timeout           Set the timeout for Mocha tests"
  echo "   --grep              Only run tests matching a pattern"
  echo "   --invert            Only run tests not matching the pattern specified by --grep"
