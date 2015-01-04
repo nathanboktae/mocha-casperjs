@@ -38,6 +38,12 @@ npm install -g mocha-casperjs
 mocha-casperjs
 ````
 
+For the sample above you also need `chai` and `casper-chai`, a great assertion library and a plugin that works well with casperjs (more info below)
+
+```
+npm install -g chai casper-chai
+```
+
 Like Mocha, if you place your tests in the `test` or `tests` directory, it will find them and run them. You can also specify tests to run individually instead.
 
 Note that mocha-casperjs has peer dependencies on casper and mocha, and will be installed ajacent to where you are installing mocha-casperjs (e.g. if you install mocha-casperjs globally, you'll have mocha and casperjs also installed globally).
