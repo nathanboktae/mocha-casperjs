@@ -4,6 +4,13 @@ module.exports = function (Mocha, casper, utils) {
       currentError,
       f = utils.format,
 
+  reportError = function() {
+    casper.checker = null
+    if (currentDone && (!currentTest || !currentTest.state)) {
+      currentDone(currentError)
+    }
+  },
+
   failTest = function(error) {
     casper.unwait()
     clearInterval(casper.checker)
@@ -17,19 +24,13 @@ module.exports = function (Mocha, casper, utils) {
     } else {
         currentTest.errors.push(error);
     }
-    function reportError() {
-        casper.checker = null
-        if (currentDone && (!currentTest || !currentTest.state)) {
-            currentDone(currentError)
-        }
-    }
 
     if ( casper.step < casper.steps.length ) {
-        casper.run(function() {
-            reportError();
-        });
-    } else {
+      casper.run(function() {
         reportError();
+      });
+    } else {
+      reportError();
     }
 
   }
@@ -51,6 +52,7 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('waitFor.timeout', function(timeout, details) {
+    casper.step++
     var message = f('waitFor timeout of %dms occured', timeout)
     details = details || {}
 
@@ -80,9 +82,11 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('step.timeout', function(step) {
+    casper.step++
     failTest(new Error(f('step %d timed out (%dms)', step, casper.options.stepTimeout)))
   })
   casper.on('timeout', function() {
+    casper.step++
     failTest(new Error(f('Load timeout of (%dms)', casper.options.timeout)))
   })
 
