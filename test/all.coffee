@@ -177,6 +177,7 @@ describe 'mocha-casperjs', ->
             throw new Error 'we should have timed out'
       , 'timeout', done
 
+
     it 'should not fail a test twice', (done) ->
       runMochaCasperJsTest
         params: ['--timeout=400', '--no-color']
@@ -204,6 +205,21 @@ describe 'mocha-casperjs', ->
         output.should.contain('1 failing')
               .and.contain('0 passing')
               .and.contain('foobarkaboom')
+        done()
+
+    it 'should ensure all errors in a particular test are reported for that test', (done) ->
+      runMochaCasperJsTest
+        params: ['--timeout=400']
+        before: ->
+          casper.start()
+        test: 'failing-cascading.js'
+      , (output, code) ->
+        output.should.contain('1) should run and report 1 failure')
+        output.should.not.contain('2) should pass')
+        output.should.contain('2) should fail')
+        output.should.not.contain('4) should pass')
+        output.should.contain('2 failing')
+        code.should.equal(2)
         done()
 
   describe 'Mocha process.stdout redirection', ->
