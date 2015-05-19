@@ -1,15 +1,37 @@
 module.exports = function (Mocha, casper, utils) {
   var currentDone,
       currentTest,
+      currentError,
       f = utils.format,
 
   failTest = function(error) {
     casper.unwait()
     clearInterval(casper.checker)
-    casper.checker = null
-    if (currentDone && (!currentTest || !currentTest.state)) {
-      currentDone(error)
+
+    // the first error takes priority
+    if ( ! currentError ) {
+        currentError = error;
     }
+    if ( currentTest.errors === undefined ) {
+        currentTest.errors = [error];
+    } else {
+        currentTest.errors.push(error);
+    }
+    function reportError() {
+        casper.checker = null
+        if (currentDone && (!currentTest || !currentTest.state)) {
+            currentDone(currentError)
+        }
+    }
+
+    if ( casper.step < casper.steps.length ) {
+        casper.run(function() {
+            reportError();
+        });
+    } else {
+        reportError();
+    }
+
   }
 
   Mocha.prototype.failCurrentTest = failTest;
@@ -84,6 +106,8 @@ module.exports = function (Mocha, casper, utils) {
           value: function (done) {
             currentTest = this.test
             currentDone = done
+            currentError = null
+
             // Run the original `fn`, passing along `done` for the case in which it's callback-asynchronous.
             // Make sure to forward the `this` context, since you can set variables and stuff on it to share
             // within a suite.
@@ -92,6 +116,7 @@ module.exports = function (Mocha, casper, utils) {
             // only flush the casper steps on test Runnables,
             // and if there are steps not ran,
             // and no set of steps are running (casper.checker is the setInterval for the checkSteps call)
+
             if (currentTest && casper.steps && casper.steps.length &&
                 casper.step < casper.steps.length && !casper.checker) {
               casper.run(function () {
