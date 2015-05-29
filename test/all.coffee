@@ -209,7 +209,7 @@ describe 'mocha-casperjs', ->
 
     it 'should ensure all errors in a particular test are reported for that test', (done) ->
       runMochaCasperJsTest
-        params: ['--reporter=json', '--timeout=400']
+        params: ['--reporter=json']
         before: ->
           casper.start()
         test: 'failing-cascading.js'
