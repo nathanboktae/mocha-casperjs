@@ -1,15 +1,38 @@
 module.exports = function (Mocha, casper, utils) {
   var currentDone,
       currentTest,
+      currentError,
       f = utils.format,
+
+  reportError = function() {
+    casper.checker = null
+    if (currentDone && (!currentTest || !currentTest.state)) {
+      currentDone(currentError)
+    }
+  },
 
   failTest = function(error) {
     casper.unwait()
     clearInterval(casper.checker)
-    casper.checker = null
-    if (currentDone && (!currentTest || !currentTest.state)) {
-      currentDone(error)
+
+    // the first error takes priority
+    if ( ! currentError ) {
+        currentError = error;
     }
+    if ( currentTest.errors === undefined ) {
+        currentTest.errors = [error];
+    } else {
+        currentTest.errors.push(error);
+    }
+
+    if ( casper.step < casper.steps.length ) {
+      casper.run(function() {
+        reportError();
+      });
+    } else {
+      reportError();
+    }
+
   }
 
   Mocha.prototype.failCurrentTest = failTest;
@@ -29,6 +52,7 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('waitFor.timeout', function(timeout, details) {
+    casper.step++
     var message = f('waitFor timeout of %dms occured', timeout)
     details = details || {}
 
@@ -58,9 +82,11 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('step.timeout', function(step) {
+    casper.step++
     failTest(new Error(f('step %d timed out (%dms)', step, casper.options.stepTimeout)))
   })
   casper.on('timeout', function() {
+    casper.step++
     failTest(new Error(f('Load timeout of (%dms)', casper.options.timeout)))
   })
 
@@ -84,6 +110,8 @@ module.exports = function (Mocha, casper, utils) {
           value: function (done) {
             currentTest = this.test
             currentDone = done
+            currentError = null
+
             // Run the original `fn`, passing along `done` for the case in which it's callback-asynchronous.
             // Make sure to forward the `this` context, since you can set variables and stuff on it to share
             // within a suite.
@@ -92,6 +120,7 @@ module.exports = function (Mocha, casper, utils) {
             // only flush the casper steps on test Runnables,
             // and if there are steps not ran,
             // and no set of steps are running (casper.checker is the setInterval for the checkSteps call)
+
             if (currentTest && casper.steps && casper.steps.length &&
                 casper.step < casper.steps.length && !casper.checker) {
               casper.run(function () {
