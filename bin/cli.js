@@ -23,7 +23,7 @@ this.casper = Casper.create({
   exitOnError: true,
   timeout: opts['casper-timeout'],
   verbose: !!opts.verbose || opts['log-level'] === 'debug',
-  logLevel: opts['log-level'] ||'warning',
+  logLevel: opts['log-level'] || 'warning',
   pageSettings: {
     userAgent: opts['user-agent']
   },
