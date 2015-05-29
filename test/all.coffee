@@ -209,16 +209,19 @@ describe 'mocha-casperjs', ->
 
     it 'should ensure all errors in a particular test are reported for that test', (done) ->
       runMochaCasperJsTest
-        params: ['--timeout=400']
+        params: ['--reporter=json', '--timeout=400']
         before: ->
           casper.start()
         test: 'failing-cascading.js'
       , (output, code) ->
-        output.should.contain('1) should run and report 1 failure')
-        output.should.not.contain('2) should pass')
-        output.should.contain('2) should fail')
-        output.should.not.contain('4) should pass')
-        output.should.contain('2 failing')
+        results = JSON.parse output
+
+        (failure.title for failure in results.failures).should.deep.equal [
+          'should run and report 1 failure', 'should fail a second time']
+
+        (pass.title for pass in results.passes).should.deep.equal [
+          'should pass', 'should pass a second time', 'should pass a third time']
+
         code.should.equal(2)
         done()
 

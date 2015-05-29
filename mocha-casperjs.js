@@ -1,13 +1,13 @@
 module.exports = function (Mocha, casper, utils) {
   var currentDone,
       currentTest,
-      currentError,
       f = utils.format,
 
   reportError = function() {
     casper.checker = null
     if (currentDone && (!currentTest || !currentTest.state)) {
-      currentDone(currentError)
+      // the first error takes priority
+      currentDone(currentTest.errors && currentTest.errors[0])
     }
   },
 
@@ -15,14 +15,10 @@ module.exports = function (Mocha, casper, utils) {
     casper.unwait()
     clearInterval(casper.checker)
 
-    // the first error takes priority
-    if ( ! currentError ) {
-        currentError = error;
-    }
-    if ( currentTest.errors === undefined ) {
-        currentTest.errors = [error];
+    if (currentTest.errors) {
+      currentTest.errors.push(error)
     } else {
-        currentTest.errors.push(error);
+      currentTest.errors = [error]
     }
 
     if ( casper.step < casper.steps.length ) {
@@ -110,7 +106,6 @@ module.exports = function (Mocha, casper, utils) {
           value: function (done) {
             currentTest = this.test
             currentDone = done
-            currentError = null
 
             // Run the original `fn`, passing along `done` for the case in which it's callback-asynchronous.
             // Make sure to forward the `this` context, since you can set variables and stuff on it to share
