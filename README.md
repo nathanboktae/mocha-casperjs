@@ -134,6 +134,10 @@ casper.on('load.finished', function (resource) {
 
 A comma seperated list of files to inject into the remote client every page load.
 
+### PhantomJS options
+
+Any phantomjs options (use `phantomjs --help` - online documentation is very old) will be passed through as-is to casperjs, which then passes them to phantomjs. Note you cannot pass them via `mocha-casperjs.opts` file, as these options are only for specific options that `mocha-casperjs` knows about.
+
 ## Custom 3rd party Reporters
 
 You can provide your own reporter via the `--reporter` flag. mocha-phantomjs will try to `require` the module and load it. Some things to take note of:
