@@ -90,6 +90,21 @@ mocha.setup({
   useColors: !opts['no-color']
 })
 
+if (typeof process === 'undefined') {
+  // a poor node.js process shim - totally not great
+  var sys = require('system')
+  this.process = {
+    pid: sys.pid,
+    env: sys.env,
+    argv: sys.args.splice(),
+    stdin: sys.stdin,
+    stdout: sys.stdout,
+    stderr: sys.stderr
+  }
+}
+
+// Remember that PhantomJS is not Node.js - the modules available to phantomjs are different than node's.
+// If you need access to built-in Mocha reporters, access them off of `Mocha.reporters`, like `Mocha.reporters.Base`.
 // fall back to spec by default
 var reporter = 'spec'
 
@@ -106,25 +121,13 @@ if ( opts.reporter ) {
   }
 }
 
-// phantomjs exits immediately if it can't find a module due to exitOnError: true from above... that should probably be false
-// either way a module may lazily require something and fail later, so a try/catch with an informative message isn't possible now.
-//
-// Remember that PhantomJS is not Node.js - the modules available to phantomjs are different than node's.
-// If you need access to built-in Mocha reporters, access them off of `Mocha.reporters`, like `Mocha.reporters.Base`.
-mocha.reporter(reporter)
+// If a third party error throws an error,
+// we need to catch it here or everything
+// will hang
+try {
+  mocha.reporter(reporter)
+} catch(e) { }
 
-if (typeof process === 'undefined') {
-  // a poor node.js process shim - totally not great
-  var sys = require('system')
-  this.process = {
-    pid: sys.pid,
-    env: sys.env,
-    argv: sys.args.splice(),
-    stdin: sys.stdin,
-    stdout: sys.stdout,
-    stderr: sys.stderr
-  }
-}
 
 if (opts.grep) {
   mocha.grep(opts.grep)
