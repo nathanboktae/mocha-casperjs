@@ -121,12 +121,12 @@ if ( opts.reporter ) {
   }
 }
 
-// If a third party error throws an error,
-// we need to catch it here or everything
-// will hang
+// If a third party error throws an error, exit.
 try {
   mocha.reporter(reporter)
-} catch(e) { }
+} catch(e) {
+  casper.exit(-2);
+}
 
 
 if (opts.grep) {
