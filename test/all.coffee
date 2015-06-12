@@ -28,6 +28,9 @@ runMochaCasperJsTest = (test, callback) ->
   process.stdout.on 'data', (data) ->
     output += data
 
+  process.stderr.on 'data', (data) ->
+    output += data
+
   process.on 'close', (code) ->
     callback output, code
 
@@ -365,6 +368,17 @@ describe 'mocha-casperjs', ->
         results.failures.should.be.empty
         done()
 
+    it 'a third-party reporter should have access to stdout and stderr', (done) ->
+      runMochaCasperJsTest
+        params: ['--reporter=./test/process-reporter']
+        test: ->
+          1.should.be.ok
+      , (output, code) ->
+        output.indexOf("Can\'t find variable: process").should.equal(-1)
+        output.indexOf('stdout').should.be.above(-1)
+        output.indexOf('stderr').should.be.above(-1)
+        done()
+
     it '--bail should fail on the first failure', (done) ->
       thisShouldFailWith
         params: ['--bail', '--reporter=dot'],
@@ -423,7 +437,7 @@ describe 'mocha-casperjs', ->
           results.stats.failures.should.equal 0
           done()
 
-      it 'should merge with command line opitons, prioritizing the command line', (done) ->
+      it 'should merge with command line options, prioritizing the command line', (done) ->
         fs.writeFileSync 'mocha-casperjs.opts', '--reporter=spec\n--user-agent=mocha-casperjs-tests'
         runMochaCasperJsTest
           params: ['--reporter=json']
