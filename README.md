@@ -60,7 +60,7 @@ The [selectXPath](http://casperjs.readthedocs.org/en/latest/selectors.html#index
 
 ## Command Line Options
 
-In addition to specifying options on the command line, you can add them to a `mocha-casperjs.opts` [like mocha.opts](http://visionmedia.github.io/mocha/#mocha.opts), except it looks for this file in the current directory.
+In addition to specifying options on the command line, you can add them to a `mocha-casperjs.opts` [like mocha.opts](http://mochajs.org#mocha.opts), except it looks for this file in the current directory.
 
 ````
 --reporter
@@ -73,7 +73,7 @@ In addition to specifying options on the command line, you can add them to a `mo
 --bail
 ````
 
-These are all [Mocha command line options](http://visionmedia.github.io/mocha/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.
+These are all [Mocha command line options](http://mochajs.org/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.
 
 Note the CasperJS cli parser does not support shorthands or spaces between parameters. So rather than `-g foo` and `--grep foo`, use `--grep=foo`
 
@@ -161,7 +161,7 @@ mocha-casperjs is a big conglomeration of various ideas and approaches.
 
 [CasperJS]: http://casperjs.org/
 [Chai]: http://chaijs.com/
-[Mocha]: http://visionmedia.github.com/mocha/
+[Mocha]: http://mochajs.org/
 [mocha-as-promised]: http://github.com/domenic/mocha-as-promised
 [mocha-phantomjs]: http://github.com/metaskills/mocha-phantomjs
 [casper-chai]: https://github.com/brianmhunt/casper-chai
