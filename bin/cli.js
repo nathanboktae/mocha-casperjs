@@ -57,7 +57,7 @@ try {
   this.chai.should()
 
   // ugly but isolated hack for #40
-  if (['function', 'object'].indexOf(typeof casper.__proto__.fetchText) && casper.__proto__.fetchText.toString().indexOf('fetchText') === -1) {
+  if (['function', 'object'].indexOf(typeof casper.__proto__.fetchText) > -1 && casper.__proto__.fetchText.toString().indexOf('fetchText') === -1) {
     casper.log('restoring Casper#fetchText', 'debug', 'mocha-casperjs')
     casper.__proto__.fetchText = function(selector) {
       this.checkStarted()
