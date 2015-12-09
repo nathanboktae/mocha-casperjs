@@ -108,16 +108,25 @@ if (typeof process === 'undefined') {
 // fall back to spec by default
 var reporter = 'spec'
 
+// Built-in Mocha reporters that are compatible
+var mochaReporters = ['spec', 'xunit', 'json'];
+
 if ( opts.reporter ) {
-  // check to see if it is a third party reporter
-  try {
-    // I don't want to use isAbsolute here as it could be a node module or a relative path
-    if (opts.reporter.indexOf('.') === 0) {
-      opts.reporter = fs.absolute(opts.reporter)
+  // Check for default and compatible Mocha reporters
+  if ( mochaReporters.indexOf(opts.reporter) !== -1) {
+    reporter = opts.reporter;
+  }
+  else {
+    // check to see if it is a third party reporter
+    try {
+      // I don't want to use isAbsolute here as it could be a node module or a relative path
+      if (opts.reporter.indexOf('.') === 0) {
+        opts.reporter = fs.absolute(opts.reporter)
+      }
+      reporter = require(opts.reporter)
+    } catch (e) {
+      reporter = opts.reporter
     }
-    reporter = require(opts.reporter)
-  } catch (e) {
-    reporter = opts.reporter
   }
 }
 
