@@ -8,7 +8,7 @@
     "phantomjs",
     "testing"
   ],
-  "version": "0.5.4" ,
+  "version": "0.5.5" ,
   "author": "Nathan Black <nathan@nathanblack.org>",
   "license": "MIT",
   "repository": {
@@ -28,10 +28,10 @@
     "casperjs": ">= 1.1.0-beta3"
   },
   "devDependencies": {
-    "chai": "1.8.1",
+    "chai": "3",
     "coffee-script": "1.7.x",
     "casper-chai": ">= 0.1.6",
-    "mocha": ">= 1.18.0 < 1.21",
+    "mocha": "2",
     "casperjs": "git://github.com/n1k0/casperjs.git#master"
   },
   "scripts": {

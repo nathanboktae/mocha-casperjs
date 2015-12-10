@@ -108,13 +108,12 @@ if (typeof process === 'undefined') {
 // fall back to spec by default
 var reporter = 'spec'
 
-// Built-in Mocha reporters that are compatible
-var mochaReporters = ['spec', 'xunit', 'json'];
-
-if ( opts.reporter ) {
-  // Check for default and compatible Mocha reporters
-  if ( mochaReporters.indexOf(opts.reporter) !== -1) {
-    reporter = opts.reporter;
+if (opts.reporter) {
+  // CasperJS's patched require searches it's own modules folder which has an `xunit` reporter already.
+  // See https://github.com/nathanboktae/mocha-casperjs/issues/68
+  // For a few well-known reporters let's just directly load them.
+  if (['spec', 'xunit', 'json'].indexOf(opts.reporter) !== -1) {
+    reporter = opts.reporter
   }
   else {
     // check to see if it is a third party reporter

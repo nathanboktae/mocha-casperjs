@@ -47,7 +47,7 @@ thisShouldFailWith = (test, failureText, expectedCode, done) ->
     if code is 0 or output.indexOf(failureText) < 0 and (typeof expectedCode isnt 'number' or code is expectedCode)
       console.log output
       throw new Error 'expected the test to fail with "' + failureText + '" in the failures, but it passed'
-    
+
     done()
 
 sampleHtml = '<!doctype html>
@@ -352,6 +352,16 @@ describe 'mocha-casperjs', ->
         results.stats.passes.should.equal 1
         results.stats.failures.should.equal 0
         results.failures.should.be.empty
+        done()
+
+    it 'should support the xunit reporter and avoid CasperJS xunit module', (done) ->
+      runMochaCasperJsTest
+        params: ['--reporter=xunit']
+        test: ->
+          1.should.be.ok
+      , (output, code) ->
+        code.should.equal 0
+        output.should.match /<testsuite/
         done()
 
     it 'using --file with a third-party reporter should pipe it\'s output to that file', (done) ->
