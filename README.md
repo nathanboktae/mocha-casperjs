@@ -1,5 +1,7 @@
 # CasperJS automation via Mocha [![Build Status](https://secure.travis-ci.org/nathanboktae/mocha-casperjs.png?branch=master)](https://travis-ci.org/nathanboktae/mocha-casperjs)
 
+[![Join the chat at https://gitter.im/nathanboktae/mocha-casperjs](https://badges.gitter.im/nathanboktae/mocha-casperjs.svg)](https://gitter.im/nathanboktae/mocha-casperjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Combine the power of [casperjs][]' automation with [Mocha][]'s robust testing framework features
 
 ## Features
