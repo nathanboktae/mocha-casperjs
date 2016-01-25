@@ -32,7 +32,8 @@
     "coffee-script": "1.7.x",
     "casper-chai": ">= 0.1.6",
     "mocha": "2",
-    "casperjs": "git://github.com/n1k0/casperjs.git#master"
+    "casperjs": "git://github.com/n1k0/casperjs.git#master",
+    "phantomjs": "1.9.18"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha test/all.coffee"
