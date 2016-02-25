@@ -1,5 +1,5 @@
 var cli = require('cli'),
-    cliOptions = cli.parse(phantom.args),
+    cliOptions = cli.parse(require('system').args.slice(1)),
     opts = cliOptions.options,
     fs = require('fs'),
     Casper = require('casper'),
