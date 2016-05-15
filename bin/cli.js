@@ -4,6 +4,7 @@ var cli = require('cli'),
     optsFile = opts.opts || 'mocha-casperjs.opts',
     fs = require('fs'),
     Casper = require('casper'),
+    extraArgs = [],
 
 getPathForModule = function(what) {
   return fs.absolute(opts[what + '-path'] || opts['mocha-casperjs-path'] + '/../../node_modules/' + what)
@@ -11,6 +12,7 @@ getPathForModule = function(what) {
 
 if (fs.exists(optsFile)) {
   var extraOpts = cli.parse(['blah'].concat(fs.read(optsFile).split('\n'))).options
+  extraArgs = cli.parse((fs.read(optsFile).split('\n'))).args;
 
   for (var p in extraOpts) {
     if (opts[p] == null) {
@@ -158,15 +160,18 @@ if (opts.slow) {
 
 // load the user's tests
 var tests = []
+
 if (cliOptions.args.length > 1) {
   // use tests if they specified them explicty
   tests = cliOptions.args.slice()
   tests.shift()
 } else {
-  // otherwise, load files from the test or tests directory like Mocha does
-  var testDir = 'test'
+  // otherwise, load files from the opts directory, test or tests directory like Mocha does
+  var testDir = extraArgs.length && extraArgs[0] || null
   if (!fs.isDirectory(testDir)) {
-    if (fs.isDirectory('tests')) {
+    if (fs.isDirectory('test')) {
+        testDir = 'test'
+    } else if (fs.isDirectory('tests')) {
       testDir = 'tests'
     } else {
       console.log('No tests specified. List them in the console, or add your tests to a "test" or "tests" folder in the current working directory.')
