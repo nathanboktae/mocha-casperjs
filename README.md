@@ -52,6 +52,12 @@ Note that mocha-casperjs has peer dependencies on casper and mocha, and will be 
 
 Note that [slimerjs][] isn't [supported at the moment](https://github.com/nathanboktae/mocha-casperjs/issues/5)
 
+#### Windows users
+
+You need to use `mocha-casperjs.bat` that will call into `casperjs.exe`. Please also refer to [CasperJS' Installation Instructions on Windows](http://docs.casperjs.org/en/latest/installation.html#casperjs-on-windows).
+
+I no longer have access to a Windows box or VM to develop on, so you'll have to dig into any issues with the batch file yourselves and send a pull request. In the end it's a shell and `PATH` issue and you can always call `casperjs.exe` yourself.
+
 ## Additional Conveniences
 
 If [chai][] is discovered (it must be installed adjacent to mocha-casperjs), it will automatically use the `should` style as well as expose `expect` globally.
