@@ -435,6 +435,8 @@ describe 'mocha-casperjs', ->
     describe 'mocha-casperjs.opts', ->
       afterEach ->
         fs.unlinkSync 'mocha-casperjs.opts'
+      after ->
+        fs.unlinkSync 'some-other-mocha-casperjs.opts'
 
       it 'should apply options from the file if available', (done) ->
         fs.writeFileSync 'mocha-casperjs.opts', '--reporter=json'
@@ -453,6 +455,19 @@ describe 'mocha-casperjs', ->
           params: ['--reporter=json']
           test: ->
             casper.page.settings.userAgent.should.equal 'mocha-casperjs-tests'
+        , (output, code) ->
+          results = JSON.parse output
+          results.stats.passes.should.equal 1
+          results.stats.failures.should.equal 0
+          done()
+
+      it 'should use an opts file from another location', (done) ->
+        fs.writeFileSync 'mocha-casperjs.opts', '--user-agent=wrong-optsfile'
+        fs.writeFileSync 'some-other-mocha-casperjs.opts', '--user-agent=some-other-mocha-casperjs-opts'
+        runMochaCasperJsTest
+          params: ['--reporter=json', '--opts=some-other-mocha-casperjs.opts']
+          test: ->
+            casper.page.settings.userAgent.should.equal 'some-other-mocha-casperjs-opts'
         , (output, code) ->
           results = JSON.parse output
           results.stats.passes.should.equal 1
