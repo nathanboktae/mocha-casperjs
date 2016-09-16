@@ -79,6 +79,7 @@ In addition to specifying options on the command line, you can add them to a `mo
 --no-color
 --slow
 --bail
+--require
 ````
 
 These are all [Mocha command line options](http://mochajs.org/#usage) that mocha-casperjs supports. Currently the default timeout is 30 seconds, not two, as writing end to end tests takes more time.

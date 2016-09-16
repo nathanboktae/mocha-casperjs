@@ -328,6 +328,17 @@ describe 'mocha-casperjs', ->
         output.should.not.match /\d+ms/
         done()
 
+    it '--require should require files before tests are run', (done) ->
+      thisShouldPass
+        params: ['--require=./test/helper.js']
+        test: ->
+          helper()
+          casper.waitForSelector 'h1', ->
+            /mocha-casperjs/.should.matchTitle
+          casper.then ->
+            'h1'.should.have.text 'Hello World!'
+      , done
+
     it '--file should pipe reporter output to a file', (done) ->
       runMochaCasperJsTest
         params: ['--file=filepipe.json', '--reporter=json', '--log-level=info']
