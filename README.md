@@ -68,7 +68,7 @@ The [selectXPath](http://casperjs.readthedocs.org/en/latest/selectors.html#index
 
 ## Command Line Options
 
-In addition to specifying options on the command line, you can add them to a `mocha-casperjs.opts` [like mocha.opts](http://mochajs.org#mocha.opts), except it looks for this file in the current directory.
+In addition to specifying options on the command line, you can add them to a `mocha-casperjs.opts` [like mocha.opts](http://mochajs.org#mochaopts), except it looks for this file in the current directory.
 
 ````
 --reporter
