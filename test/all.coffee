@@ -339,6 +339,17 @@ describe 'mocha-casperjs', ->
             'h1'.should.have.text 'Hello World!'
       , done
 
+    it '--require should require the last file if multiple --require are passed', (done) ->
+      thisShouldPass
+        params: ['--require=./test/does-not-exist.js', '--require=./test/helper.js']
+        test: ->
+          helper()
+          casper.waitForSelector 'h1', ->
+            /mocha-casperjs/.should.matchTitle
+          casper.then ->
+            'h1'.should.have.text 'Hello World!'
+      , done
+
     it '--file should pipe reporter output to a file', (done) ->
       runMochaCasperJsTest
         params: ['--file=filepipe.json', '--reporter=json', '--log-level=info']
