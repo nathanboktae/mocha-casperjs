@@ -16,6 +16,7 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ] ; then
  echo "   --ui                Tests style ('bdd', 'tdd', or 'exports')"
  echo "   --no-color          Disable color output"
  echo "   --slow              Sets the threshold for marking tests as slow running"
+ echo "   --require           require the given module"
  echo "   --bail              Exit on the first test failure"
 
  echo "\n   Casper Options"

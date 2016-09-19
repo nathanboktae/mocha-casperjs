@@ -24,6 +24,7 @@ IF "%showhelp%" == "true" (
  echo    --ui                Tests style ['bdd', 'tdd', or 'exports']
  echo    --no-color          Disable color output
  echo    --slow              Sets the threshold for marking tests as slow running
+ echo    --require           require the given module
  echo    --bail              Exit on the first test failure
 
  echo    Casper Options

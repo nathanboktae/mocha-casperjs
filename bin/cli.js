@@ -158,6 +158,10 @@ if (opts.slow) {
   mocha.slow(opts.slow)
 }
 
+if (opts.require) {
+  require(fs.absolute(opts.require));
+}
+
 // load the user's tests
 var tests = []
 
