@@ -52,6 +52,8 @@ Note that mocha-casperjs has peer dependencies on casper and mocha, and will be 
 
 Note that [slimerjs][] isn't [supported at the moment](https://github.com/nathanboktae/mocha-casperjs/issues/5)
 
+Remember that your tests *do not run in node.js*, but whatever engine you choose from casperjs, so your language and API features will depend on that.
+
 #### Windows users
 
 You need to use `mocha-casperjs.bat` that will call into `casperjs.exe`. Please also refer to [CasperJS' Installation Instructions on Windows](http://docs.casperjs.org/en/latest/installation.html#casperjs-on-windows).
