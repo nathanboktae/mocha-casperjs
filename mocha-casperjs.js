@@ -48,7 +48,6 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('waitFor.timeout', function(timeout, details) {
-    casper.step++
     var message = f('waitFor timeout of %dms occured', timeout)
     details = details || {}
 
@@ -78,7 +77,6 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('step.timeout', function(step) {
-    casper.step++
     failTest(new Error(f('step %d timed out (%dms)', step, casper.options.stepTimeout)))
   })
   casper.on('timeout', function() {

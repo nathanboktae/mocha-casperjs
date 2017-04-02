@@ -496,4 +496,46 @@ describe 'mocha-casperjs', ->
           results.stats.failures.should.equal 0
           done()
 
+  describe 'Steps checking', ->
+    describe 'Should run all steps if the previous test failed', ->
+      it 'should run all steps if the previous test failed on the last step', (done) ->
+        runMochaCasperJsTest
+          test: 'all-steps-after-failing-on-last-step.js'
+        , (output, code) ->
+          code.should.equal 1
+          output.should.contain 'THEN 1'
+          output.should.contain 'THEN 2'
+          output.should.contain 'THEN 3'
+          done()
+
+      it 'should run all steps if the previous test failed on not last step', (done) ->
+        runMochaCasperJsTest
+          test: 'all-steps-after-failing-on-not-last-step.js'
+        , (output, code) ->
+          code.should.equal 1
+          output.should.contain 'THEN 1'
+          output.should.contain 'THEN 3'
+          output.should.contain 'THEN 4'
+          done()
+
+      it 'should run all steps if the previous test failed on the last sub step', (done) ->
+        runMochaCasperJsTest
+          test: 'all-steps-after-failing-on-last-sub-step.js'
+        , (output, code) ->
+          code.should.equal 1
+          output.should.contain 'THEN 1'
+          output.should.contain 'THEN 2'
+          output.should.contain 'THEN 3'
+          done()
+
+      it 'should run all steps if the previous test failed on not last sub step', (done) ->
+        runMochaCasperJsTest
+          test: 'all-steps-after-failing-on-not-last-sub-step.js'
+        , (output, code) ->
+          code.should.equal 1
+          output.should.contain 'THEN 1'
+          output.should.contain 'THEN 3'
+          output.should.contain 'THEN 4'
+          done()
+
   after -> server.close()
