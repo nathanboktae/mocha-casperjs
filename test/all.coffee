@@ -538,4 +538,26 @@ describe 'mocha-casperjs', ->
           output.should.contain 'THEN 4'
           done()
 
+    describe 'Should abort the test if it fails', ->
+      it 'should abort the test if it fails on the step in the first level', (done) ->
+        runMochaCasperJsTest
+          test: 'abort-test-after-failing.js'
+        , (output, code) ->
+          code.should.equal 1
+          output.should.contain 'THEN 1'
+          output.should.not.contain 'THEN 2'
+          output.should.contain 'THEN 3'
+          done()
+
+      it 'should abort the test if it fails on substep', (done) ->
+        runMochaCasperJsTest
+          test: 'abort-test-after-failing-on-sub-step.js'
+        , (output, code) ->
+          code.should.equal 1
+          output.should.contain 'THEN 1'
+          output.should.not.contain 'THEN 2'
+          output.should.not.contain 'THEN 3'
+          output.should.contain 'THEN 4'
+          done()
+
   after -> server.close()
