@@ -8,7 +8,7 @@
     "phantomjs",
     "testing"
   ],
-  "version": "0.5.8" ,
+  "version": "0.6.0" ,
   "author": "Nathan Black <nathan@nathanblack.org>",
   "license": "MIT",
   "repository": {
