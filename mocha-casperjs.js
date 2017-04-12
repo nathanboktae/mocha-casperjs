@@ -28,7 +28,10 @@ module.exports = function (Mocha, casper, utils) {
     } else {
       reportError();
     }
+  },
 
+  resetSteps = function() {
+    casper.bypass(casper.steps.length)
   }
 
   Mocha.prototype.failCurrentTest = failTest;
@@ -48,7 +51,7 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('waitFor.timeout', function(timeout, details) {
-    casper.step++
+    resetSteps()
     var message = f('waitFor timeout of %dms occured', timeout)
     details = details || {}
 
@@ -78,11 +81,11 @@ module.exports = function (Mocha, casper, utils) {
   })
 
   casper.on('step.timeout', function(step) {
-    casper.step++
+    resetSteps()
     failTest(new Error(f('step %d timed out (%dms)', step, casper.options.stepTimeout)))
   })
   casper.on('timeout', function() {
-    casper.step++
+    resetSteps()
     failTest(new Error(f('Load timeout of (%dms)', casper.options.timeout)))
   })
 
