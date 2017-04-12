@@ -1,6 +1,6 @@
 describe('Should run all steps if the previous test failed on not last step', function() {
   before(function() {
-    casper.start('http://www.google.com/')
+    casper.start('http://localhost:10473/sample')
   })
 
   it('First test', function() {
@@ -14,11 +14,13 @@ describe('Should run all steps if the previous test failed on not last step', fu
   })
 
   it('Second test', function() {
-    casper.then(function() {
-      console.log('THEN 3')
-    })
-    casper.then(function() {
-      console.log('THEN 4')
-    })
+    casper
+      .waitForSelector('article')
+      .then(function() {
+        console.log('THEN 3')
+      })
+      .then(function() {
+        console.log('THEN 4')
+      })
   })
 })

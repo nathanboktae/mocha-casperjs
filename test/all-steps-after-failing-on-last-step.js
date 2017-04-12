@@ -1,6 +1,6 @@
 describe('Should run all steps if the previous test failed on the last step', function() {
   before(function() {
-    casper.start('http://www.google.com/')
+    casper.start('http://localhost:10473/sample')
   })
 
   it('First test', function() {

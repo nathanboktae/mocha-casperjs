@@ -496,68 +496,48 @@ describe 'mocha-casperjs', ->
           results.stats.failures.should.equal 0
           done()
 
-  describe 'Steps checking', ->
-    describe 'Should run all steps if the previous test failed', ->
-      it 'should run all steps if the previous test failed on the last step', (done) ->
-        runMochaCasperJsTest
-          test: 'all-steps-after-failing-on-last-step.js'
-        , (output, code) ->
-          code.should.equal 1
-          output.should.contain 'THEN 1'
-          output.should.contain 'THEN 2'
-          output.should.contain 'THEN 3'
-          done()
+  describe 'Recovering from step failures in tests', ->
+    it 'should run all steps in the next test if failed on the last step', (done) ->
+      runMochaCasperJsTest
+        test: 'all-steps-after-failing-on-last-step.js'
+      , (output, code) ->
+        code.should.equal 1
+        output.should.contain 'THEN 1'
+        output.should.contain 'THEN 2'
+        output.should.contain 'THEN 3'
+        done()
 
-      it 'should run all steps if the previous test failed on not last step', (done) ->
-        runMochaCasperJsTest
-          test: 'all-steps-after-failing-on-not-last-step.js'
-        , (output, code) ->
-          code.should.equal 1
-          output.should.contain 'THEN 1'
-          output.should.contain 'THEN 3'
-          output.should.contain 'THEN 4'
-          done()
+    it 'should skip remaining steps in failed test and run all steps in the next test if failed on not last step', (done) ->
+      runMochaCasperJsTest
+        test: 'all-steps-after-failing-on-not-last-step.js'
+      , (output, code) ->
+        code.should.equal 1
+        output.should.contain 'THEN 1'
+        output.should.not.contain 'THEN 2'
+        output.should.contain 'THEN 3'
+        output.should.contain 'THEN 4'
+        done()
 
-      it 'should run all steps if the previous test failed on the last sub step', (done) ->
-        runMochaCasperJsTest
-          test: 'all-steps-after-failing-on-last-sub-step.js'
-        , (output, code) ->
-          code.should.equal 1
-          output.should.contain 'THEN 1'
-          output.should.contain 'THEN 2'
-          output.should.contain 'THEN 3'
-          done()
+    it 'should run all steps in the next test if failed on the last sub step', (done) ->
+      runMochaCasperJsTest
+        test: 'all-steps-after-failing-on-last-sub-step.js'
+      , (output, code) ->
+        code.should.equal 1
+        output.should.contain 'THEN 1'
+        output.should.contain 'THEN 2'
+        output.should.contain 'THEN 3'
+        done()
 
-      it 'should run all steps if the previous test failed on not last sub step', (done) ->
-        runMochaCasperJsTest
-          test: 'all-steps-after-failing-on-not-last-sub-step.js'
-        , (output, code) ->
-          code.should.equal 1
-          output.should.contain 'THEN 1'
-          output.should.contain 'THEN 3'
-          output.should.contain 'THEN 4'
-          done()
-
-    describe 'Should abort the test if it fails', ->
-      it 'should abort the test if it fails on the step in the first level', (done) ->
-        runMochaCasperJsTest
-          test: 'abort-test-after-failing.js'
-        , (output, code) ->
-          code.should.equal 1
-          output.should.contain 'THEN 1'
-          output.should.not.contain 'THEN 2'
-          output.should.contain 'THEN 3'
-          done()
-
-      it 'should abort the test if it fails on substep', (done) ->
-        runMochaCasperJsTest
-          test: 'abort-test-after-failing-on-sub-step.js'
-        , (output, code) ->
-          code.should.equal 1
-          output.should.contain 'THEN 1'
-          output.should.not.contain 'THEN 2'
-          output.should.not.contain 'THEN 3'
-          output.should.contain 'THEN 4'
-          done()
+    it 'should run all steps in the next test if failed on not last sub step', (done) ->
+      runMochaCasperJsTest
+        test: 'all-steps-after-failing-on-not-last-sub-step.js'
+      , (output, code) ->
+        code.should.equal 1
+        output.should.contain 'THEN 1'
+        output.should.not.contain 'THEN 2'
+        output.should.not.contain 'THEN 3'
+        output.should.contain 'THEN 4'
+        output.should.contain 'THEN 5'
+        done()
 
   after -> server.close()
