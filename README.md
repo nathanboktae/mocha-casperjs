@@ -1,10 +1,14 @@
 # CasperJS automation via Mocha [![Build Status](https://secure.travis-ci.org/nathanboktae/mocha-casperjs.png?branch=master)](https://travis-ci.org/nathanboktae/mocha-casperjs)
 
-[![Join the chat at https://gitter.im/nathanboktae/mocha-casperjs](https://badges.gitter.im/nathanboktae/mocha-casperjs.svg)](https://gitter.im/nathanboktae/mocha-casperjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Combine the power of [casperjs][]' automation with [Mocha][]'s robust testing framework features
 
-## Features
+## Deprecated
+
+Ariya Hidayat [archived phantomjs](https://github.com/ariya/phantomjs/issues/15344) on March 3rd, 2018. (See [this tweet](https://twitter.com/AriyaHidayat/status/970173001701367808) for more info). phantomjs served us all as great headless browser for years, but now with [Electron](https://electronjs.org/) and headless modes for both [Chrome](https://developers.google.com/web/updates/2017/04/headless-chrome) and [Firefox](https://developer.mozilla.org/en-US/Firefox/Headless_mode), we have much better options. I highly recommend [nightmarejs](https://github.com/segmentio/nightmare) to write your end-to-end tests on to replace `mocha-casperjs`. 
+
+I will accept pull requests still, but I won't be answering issues or doing feature work myself.
+
+### Features
 - automatically load Casper, Mocha, and optionally [chai][] and [casper-chai][]
 - automatically run your Casper steps after each test
 - use any Mocha reporter that can run in the [phantomjs][] environment
@@ -33,7 +37,7 @@ describe('Google searching', function() {
 })
 ````
 
-## How to use
+### How to use
 
 ````
 npm install -g mocha-casperjs
@@ -60,7 +64,7 @@ You need to use `mocha-casperjs.bat` that will call into `casperjs.exe`. Please 
 
 I no longer have access to a Windows box or VM to develop on, so you'll have to dig into any issues with the batch file yourselves and send a pull request. In the end it's a shell and `PATH` issue and you can always call `casperjs.exe` yourself.
 
-## Additional Conveniences
+### Additional Conveniences
 
 If [chai][] is discovered (it must be installed adjacent to mocha-casperjs), it will automatically use the `should` style as well as expose `expect` globally.
 
@@ -116,7 +120,7 @@ Load [Chai][] from the specified path, otherwise look for it adjacent to mocha-c
 
 Load [casper-chai][] from the specified path, otherwise look for it adjacent to mocha-casperjs
 
-### CasperJS options
+#### CasperJS options
 
 Also, you can add [CasperJS options](http://docs.casperjs.org/en/latest/modules/casper.html#index-1) to `mocha-casperjs.opts`. Below are the supported options:
 
@@ -145,11 +149,11 @@ casper.on('load.finished', function (resource) {
 
 A comma seperated list of files to inject into the remote client every page load.
 
-### PhantomJS options
+#### PhantomJS options
 
 Any phantomjs options (use `phantomjs --help` - online documentation is very old) will be passed through as-is to casperjs, which then passes them to phantomjs. Note you cannot pass them via `mocha-casperjs.opts` file, as these options are only for specific options that `mocha-casperjs` knows about.
 
-## Custom 3rd party Reporters
+### Custom 3rd party Reporters
 
 You can provide your own reporter via the `--reporter` flag. mocha-phantomjs will try to `require` the module and load it. Some things to take note of:
 
@@ -157,13 +161,13 @@ You can provide your own reporter via the `--reporter` flag. mocha-phantomjs wil
 - *PhantomJS is not node.js.* You won't have access to standard node modules like `url`, `http`, etc. Refer to [PhantomJS's built in modules](https://github.com/ariya/phantomjs/wiki/API-Reference#wiki-module-api). However, mocha-casperjs does provide a very minimalistic `process` shim to PhantomJS's `system` module.
 - If you want access to built-in Mocha reporters, they are available on `Mocha.reporters`. For example, `Mocha.reporters.Base`.
 
-## Tips to writing tests
+### Tips to writing tests
 
 1. Only call `casper.start` once. casper initializes state in this call and it doesn't support being called twice. use `casper.thenOpen` if you need to navigate to another page later on
 2. Make sure your casper operations are in a step. If a step isn't added in a test or test hook, mocha-casperjs will not tell mocha to wait for casper.
 3. Capser's timeout is overall for the entire test run, and mocha's timeout is per hook/test. Casper uses separate timeouts for waits, and they can be overridden every `waitFor` call. Mocha also allows overridding timeout per test and hook.
 
-## How it works
+### How it works
 
 mocha-casperjs is a big conglomeration of various ideas and approaches.
 - It patches Mocha's `Runnable` to have every runabble be async and flush the casper tests - an approach taken from [mocha-as-promised][].
